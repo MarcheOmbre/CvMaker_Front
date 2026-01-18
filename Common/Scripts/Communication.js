@@ -41,6 +41,7 @@ async function SendRequest(type, tokenToInject, parameters, link, data, onSuccee
 
     if (tokenToInject) {
         options.headers["Authorization"] = `Bearer ${tokenToInject}`;
+        options.credentials = "include";
     }
 
     if (data) {
