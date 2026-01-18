@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", async function ()
             new LoginDto(emailInput.value, passwordInput.value),
             res => {
                 window.localStorage.setItem(TokenKey, res);
+                console.log(res + "\n" + window.localStorage.getItem(TokenKey));
                 location.assign("./Listing/index.html")
             },
             response => {
