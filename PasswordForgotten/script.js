@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         await SendRequest("POST", null, null,
             APILink + "Authentification/ForgotPassword",
-            new RetrievePasswordDto(emailInput.value, "http://localhost:63342/CvBuilderBack/Front/ResetPassword/index.html"),
+            new RetrievePasswordDto(emailInput.value, "https://green-moss-02220040f.1.azurestaticapps.net/ResetPassword/index.html"),
             _ => {
                 message.color = "black";
                 message.textContent = "An email has been sent to you";
