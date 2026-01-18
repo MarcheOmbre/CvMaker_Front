@@ -37,7 +37,8 @@ async function SendRequest(type, tokenToInject, parameters, link, data, onSuccee
     // Create the request
     const options = {
         method: type,
-        headers: {"Content-Type": data ? "application/json" : "text/plain; charset=utf-8"}
+        headers: {"Content-Type": data ? "application/json" : "text/plain; charset=utf-8"},
+        mode: 'cors'
     };
 
     if (tokenToInject) {
@@ -49,7 +50,6 @@ async function SendRequest(type, tokenToInject, parameters, link, data, onSuccee
     }
 
     const response = await fetch(link, options);
-    console.log(response);
     const textResponse = await response.text();
     
     if(response.ok){
