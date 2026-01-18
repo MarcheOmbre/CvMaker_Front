@@ -49,6 +49,7 @@ async function SendRequest(type, tokenToInject, parameters, link, data, onSuccee
     }
 
     const response = await fetch(link, options);
+    console.log(response);
     const textResponse = await response.text();
     
     if(response.ok){
