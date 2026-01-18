@@ -17,5 +17,5 @@ function isMatchingMailPattern(str){
 }
 
 function checkIsLogged(){
-    return document.cookie !== "";
+    return document.local !== "";
 }

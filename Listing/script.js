@@ -34,7 +34,7 @@ async function addCv(cv) {
             return;
         }
 
-        await SendRequest("POST", document.cookie, null,
+        await SendRequest("POST", localStorage.getItem(TokenKey), null,
             APILink + "Cv/SetName", new SetNameDto(cv.id, children[0].value),
             () => {
             },
@@ -52,7 +52,7 @@ async function addCv(cv) {
             const parameters = [];
             parameters.push(new KeyPairValue("id", cv.id));
 
-            await SendRequest("DELETE", document.cookie, parameters,
+            await SendRequest("DELETE", localStorage.getItem(TokenKey), parameters,
                 APILink + `Cv/Delete/`, null,
                 _ => templateClone.remove(),
                 res => alert.textContent = res);
@@ -63,7 +63,7 @@ async function addCv(cv) {
 }
 
 async function reloadCvs() {
-    await SendRequest("GET", document.cookie, null, APILink + "Cv/GetAll", null,
+    await SendRequest("GET", localStorage.getItem(TokenKey), null, APILink + "Cv/GetAll", null,
         async function(res)
         {
             cvsParent.innerHTML = "";
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     parameters.push(new KeyPairValue("name", "CV"));
     createButton.onclick = async function() 
     {
-        await SendRequest("PUT", document.cookie, parameters,
+        await SendRequest("PUT", localStorage.getItem(TokenKey), parameters,
             APILink + "Cv/Create", null,
             _ => reloadCvs(),
             res => alert.textContent = res)

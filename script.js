@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async function ()
             APILink + "Authentification/Log",
             new LoginDto(emailInput.value, passwordInput.value),
             res => {
-                document.cookie = res;
+                window.localStorage.setItem(TokenKey, res);
                 location.assign("./Listing/index.html")
             },
             response => {

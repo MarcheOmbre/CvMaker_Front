@@ -686,13 +686,13 @@ document.addEventListener("DOMContentLoaded", async function () {
             const generatedJson = await generateJson();
             const cvId = sessionStorage.getItem(CvIdItemKey);
             
-            await SendRequest("POST", document.cookie, null, APILink + "Cv/SetContent/",
+            await SendRequest("POST", localStorage.getItem(TokenKey), null, APILink + "Cv/SetContent/",
                 new SetContentDto(cvId, generatedJson.content, null, err => alertElement.textContent = err));
 
-            await SendRequest("POST", document.cookie, null, APILink + "Cv/SetImage/",
+            await SendRequest("POST", localStorage.getItem(TokenKey), null, APILink + "Cv/SetImage/",
                 new SetContentDto(cvId, generatedJson.image), null, err => alertElement.textContent = err);
 
-            await SendRequest("POST", document.cookie, null, APILink + "Cv/SetCustomCss/",
+            await SendRequest("POST", localStorage.getItem(TokenKey), null, APILink + "Cv/SetCustomCss/",
                 new SetContentDto(cvId, generatedJson.customCss), null, err => alertElement.textContent = err);
             
             saveButton.disabled = false;
@@ -706,7 +706,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         // Hide the page during loading
         document.body.style.display = "none";
 
-        await SendRequest("GET", document.cookie, parameters, APILink + `Cv/Get`, null, async function (res) {
+        await SendRequest("GET", localStorage.getItem(TokenKey), parameters, APILink + `Cv/Get`, null, async function (res) {
 
             const file = JSON.parse(res);
             await importFromJson(file);
