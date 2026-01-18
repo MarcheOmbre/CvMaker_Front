@@ -17,5 +17,5 @@ function isMatchingMailPattern(str){
 }
 
 function checkIsLogged(){
-    return document.local !== "";
+    return localStorage.getItem(TokenKey) !== null;
 }
