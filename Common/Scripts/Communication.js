@@ -38,12 +38,12 @@ async function SendRequest(type, tokenToInject, parameters, link, data, onSuccee
     const options = {
         method: type,
         headers: {"Content-Type": data ? "application/json" : "text/plain; charset=utf-8"},
+        mode: "cors",
+        credentials: "include"
     };
 
     if (tokenToInject) {
-        options.credentials = "include";
-        options.authorization = "Bearer " + tokenToInject;
-        options.mode = "cors";
+        options.headers["Authorization"] = "Bearer " + tokenToInject;
     }
 
     if (data) {
