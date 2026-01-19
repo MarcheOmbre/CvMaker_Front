@@ -1,8 +1,17 @@
-﻿body div{
+﻿body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.window > div{
     display: grid;
     grid-template-columns: 100px auto;
-    gap: 10px;
+    gap: 20px;
     justify-content: center;
+    align-items: center;
 }
 
 label{
@@ -10,20 +19,11 @@ label{
     width: 100px;
 }
 
-#alert{
+.input-logo_container{
     grid-column: 1/3;
 }
 
-#sign-up{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 30px;
+#signup{
     grid-column: 1/3;
-}
-
-#login{
-    padding: 10px;
-    min-width: 100px;
+    text-align: right;
 }

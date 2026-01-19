@@ -2,7 +2,8 @@ const emailInput = document.getElementById("email_input");
 const passwordInput = document.getElementById("password_input");
 const passwordConfirmationInput = document.getElementById("password-confirmation_input");
 const signupButton = document.getElementById("signup_button");
-const alert = document.getElementById("alert");
+const message = document.getElementById("message");
+
 
 class RegisterDto {
     constructor(email, password) {
@@ -34,20 +35,20 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
     
     signupButton.onclick = async _ => {
-
+        
         if(!isMatchingMailPattern(emailInput.value))
         {
-            alert.textContent = "Invalid email pattern";
+            showMessage(message, "email pattern incorrect", MessageClass.Error);
             return;
         }
 
         if(passwordInput.value === ""){
-            alert.textContent = "Password can't be null";
+            showMessage(message, "Password can't be null", MessageClass.Error);
             return;
         }
         
         if(passwordConfirmationInput.value !== passwordInput.value){
-            alert.textContent = "Passwords doesn't match";
+            showMessage(message, "Passwords doesn't match", MessageClass.Error);
             return;
         }
 
@@ -55,7 +56,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             APILink + "Authentification/Register",
             new RegisterDto(emailInput.value, passwordInput.value, passwordConfirmationInput.value),
             _ => location.assign("../index.html"),
-            res => alert.textContent = res);
+            res => showMessage(message, res, MessageClass.Error));
     }
 
 })

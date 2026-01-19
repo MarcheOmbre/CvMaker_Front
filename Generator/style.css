@@ -1,5 +1,22 @@
-﻿H1 {
-    text-align: center;
+﻿#top-bar{
+    background-color: var(--theme-color-overlay);
+    width: 100%;
+    height: 60px;
+    display: flex;
+    position: sticky;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    z-index: 1;
+}
+
+#top-bar button{
+    position: absolute;
+    left: 10px;
+}
+
+#top-bar h1{
+    padding: 0;
 }
 
 input, textarea {
@@ -15,20 +32,18 @@ input, textarea {
 
 #preview{
     position: fixed;
-    width: 49vw;
+    width: 50vw;
     height: 100vh;
     overflow-y: scroll;
     top: 0;
-    left: 51vw;
+    left: 50vw;
 }
 
 #form {
     display: grid;
     grid-template-columns: auto auto;
     grid-gap: 30px;
-    margin-top: 50px;
-    margin-bottom: 50px;
-    width: 50vw;
+    margin: 50px;
     padding-bottom: 50px;
 }
 
@@ -49,14 +64,6 @@ input, textarea {
     border-radius: 50%;
 }
 
-#alert {
-    position: fixed;
-    width: 100%;
-    text-align: center;
-    bottom: 10px;
-    z-index: 1000;
-}
-
 .movable_element{
     display: flex;
     flex-direction: row;
@@ -66,8 +73,8 @@ input, textarea {
 
 .movable_element button{
     min-width: 0;
-    width: 35px;
-    height: 35px;
+    width: 45px;
+    height: 45px;
 }
 
 .arrows_div{
@@ -75,11 +82,13 @@ input, textarea {
     flex-direction: row;
     align-items: flex-start;
     gap: 5px;
+    width: 110px;
+    margin-left: -55px;
 }
 
 .contact-item button, .skill-item button, .link-item button, .work-item button, .education-item button, .project-item button, .language-item button, .hobby-item button{
     min-width: 0;
-    width: 35px;
+    width: 45px;
 }
 
 #contacts, #links, #skills, #works, #educations, #languages, #projects, #hobbies {
@@ -93,7 +102,7 @@ input, textarea {
 .contact-item, .link-item{
     width: 100%;
     display: grid;
-    grid-template-columns: auto auto 35px;
+    grid-template-columns: auto auto 45px;
     grid-gap: 10px;
 }
 
@@ -112,13 +121,13 @@ input, textarea {
 .skill-item, .hobby-item{
     width: 100%;
     display: grid;
-    grid-template-columns: auto 35px;
+    grid-template-columns: auto 45px;
     grid-gap: 10px;
 }
 
 .work-item .title-content_div, .project-item .title-content_div{
     display: grid;
-    grid-template-columns: auto 35px;
+    grid-template-columns: auto 45px;
     grid-gap: 10px;
 }
 
@@ -136,26 +145,13 @@ input, textarea {
 .education-item{
     width: 100%;
     display: grid;
-    grid-template-columns: auto 150px 35px;
+    grid-template-columns: auto 150px 45px;
     grid-gap: 10px;
 }
 
 .language-item {
     width: 100%;
     display: grid;
-    grid-template-columns: auto 100px 35px;
+    grid-template-columns: auto 100px 45px;
     grid-gap: 5px;
-}
-
-#buttons {
-    display: flex;
-    position: sticky;
-    left: 0;
-    bottom : 0;
-    width: 100%;
-    z-index: 1000;
-    flex-direction: row;
-    justify-content: flex-end;
-    gap: 10px;
-    padding-bottom: 10px;
 }

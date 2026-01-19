@@ -9,24 +9,29 @@
     <script type="text/javascript" src="../Common/Scripts/Constants.js"></script>
     <script type="text/javascript" src="../Common/Scripts/CheckUtility.js"></script>
     <script type="text/javascript" src="../Common/Scripts/Communication.js"></script>
+    <script type="text/javascript" src="../Common/Scripts/Utility.js"></script>
     <script type="text/javascript" src="./script.js" defer></script>
 
 </head>
 
 <body>
 
-<H1>Reset password</H1>
-
-<div>
-    <p id="alert"></p>
-    <label for="password_input">Password:</label>
-    <input type="password" id="password_input">
-    <label for="password-confirmation_input">Confirmation:</label>
-    <input type="password" id="password-confirmation_input">
-    <div id="reset">
-        <button id="reset_button">Reset</button>
+<div class="window">
+    
+    <H1>Reset password</H1>
+    <div>
+        <label for="password_input">Password:</label>
+        <input type="password" id="password_input">
+        <label for="password-confirmation_input">Confirmation:</label>
+        <input type="password" id="password-confirmation_input">
+        <div id="reset">
+            <button id="reset_button">Reset</button>
+        </div>
     </div>
+    
 </div>
+
+<p id="message"></p>
 
 </body>
 

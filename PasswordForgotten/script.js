@@ -25,8 +25,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     retrieveButton.onclick = async function() {
 
         if (!isMatchingMailPattern(emailInput.value)) {
-            message.color = "red";
-            message.textContent = "Invalid email pattern";
+            showMessage(message, "email pattern incorrect", MessageClass.Error);
             return;
         }
 
@@ -36,12 +35,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             APILink + "Authentification/ForgotPassword",
             new RetrievePasswordDto(emailInput.value, "https://green-moss-02220040f.1.azurestaticapps.net/ResetPassword/index.html"),
             _ => {
-                message.color = "black";
-                message.textContent = "An email has been sent to you";
+                showMessage(message, "Email sent", MessageClass.Info);
+                retrieveButton.disabled = false;
             }, res => {
                 retrieveButton.disabled = false;
-                message.color = "red";
-                message.textContent = res;
+                showMessage(message, res, MessageClass.Error);
             }
         )
     }

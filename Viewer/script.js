@@ -307,9 +307,10 @@ async function refreshFromJson(dataJson) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    printButton.onclick = _ => {
+    document.getElementById("print_button").onclick = _ => {
+        const buttonDisplay = printButton.style.display;
         printButton.style.display = "none";
         this.print();
-        printButton.style.display = "block";
+        printButton.style.display = buttonDisplay;
     }
 });

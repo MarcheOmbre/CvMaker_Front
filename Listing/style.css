@@ -1,11 +1,9 @@
-﻿h2{
-    text-align: center;
-}
-
-body{
+﻿body{
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
 body div
@@ -13,10 +11,12 @@ body div
     display: grid;
     grid-template-columns: auto;
     gap: 20px;
-    width: 30vw;
 }
 
 #cvs{
+    background-color: var(--theme-color-background-dark);
+    padding: 20px;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -32,15 +32,9 @@ body div
 }
 
 .cv-item{
+    width: 400px;
     display: grid;
-    grid-template-columns: auto 50px 50px;
+    justify-content: center;
+    grid-template-columns: 250px 50px 50px;
     gap: 5px;
-}
-
-.cv_button{
-    font-size: 10px;
-    min-width: 50px;
-    max-width: 50px;
-    width: 50px;
-    height: 30px;
 }

@@ -1,7 +1,7 @@
 ﻿const emailInput = document.getElementById("email_input");
 const passwordInput = document.getElementById("password_input");
 const loginButton = document.getElementById("login_button");
-const alert = document.getElementById("alert");
+const message = document.getElementById("message");
 
 class LoginDto {
     constructor(email, password) {
@@ -32,12 +32,12 @@ document.addEventListener("DOMContentLoaded", async function ()
         
         if(!isMatchingMailPattern(emailInput.value))
         {
-            alert.textContent = "Invalid email pattern";
+            showMessage(message, "email pattern incorrect", MessageClass.Error);
             return;
         }
 
         if (passwordInput.value === "") {
-            alert.textContent = "Password can't be null";
+            showMessage(message, "Password can't be null", MessageClass.Error);
             return;
         }
 
@@ -48,11 +48,10 @@ document.addEventListener("DOMContentLoaded", async function ()
             new LoginDto(emailInput.value, passwordInput.value),
             res => {
                 window.localStorage.setItem(TokenKey, res);
-                console.log(res + "\n" + window.localStorage.getItem(TokenKey));
                 location.assign("./Listing/index.html")
             },
             response => {
-                alert.textContent = response;
+                showMessage(message, response, MessageClass.Error);
                 loginButton.disabled = false;
             });
     }

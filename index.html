@@ -9,26 +9,38 @@
     <script type="text/javascript" src="./Common/Scripts/Constants.js"></script>
     <script type="text/javascript" src="./Common/Scripts/CheckUtility.js"></script>
     <script type="text/javascript" src="./Common/Scripts/Communication.js"></script>
+    <script type="text/javascript" src="./Common/Scripts/Utility.js"></script>
     <script type="text/javascript" src="./script.js" defer></script>
 
 </head>
 
 <body>
 
-<H1>Log-in</H1>
+<div class="window">
+    <H1>Log-in</H1>
 
-<div>
-    <p id="alert"></p>
-    <Label for="email_input">Email:</Label>
-    <input type="email" id="email_input" pattern="[^@\s]+@[^@\s]+\.[^@\s]+"/>
-    <label for="password_input">Password:</label>
-    <input type="password" id="password_input">
-    <div id="login">
-        <a href="./SignUp/index.html">Sign-up</a>
-        <button id="login_button">Log-in</button>
+    <div>
+        <div class="input-logo_container">
+            <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" d="M7 17v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3Zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+            </svg>
+            <input type="email" id="email_input" pattern="[^@\s]+@[^@\s]+\.[^@\s]+"/>
+        </div>
+        <div class="input-logo_container">
+            <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M12 14v3m-3-6V7a3 3 0 1 1 6 0v4m-8 0h10a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1Z"/>
+            </svg>
+            <input type="password" id="password_input">
+        </div>
+        <div id="login">
+            <a class="button-link" href="./SignUp/index.html">Sign-up</a>
+            <button id="login_button">Log-in</button>
+        </div>
+        <a class="button-link" href="./PasswordForgotten/index.html">Password forgotten</a>
     </div>
-    <a href="./PasswordForgotten/index.html">Password forgotten</a>
 </div>
+
+<p id="message" style="display: none"></p>
 
 </body>
 

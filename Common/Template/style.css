@@ -8,6 +8,10 @@
     margin: 0;
 }
 
+html{
+    background-color: white;
+}
+
 #content{
     padding : 10px;
     display: flex;

@@ -1,26 +1,26 @@
-﻿body div{
+﻿body{
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
+    height: 100vh;
 }
 
-body div div{
+.window > div{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    gap: 10px;
     align-items: flex-start;
-    gap: 10px;
 }
 
-#message{
-    grid-column: 1/3;
+.window > div > button{
+    align-self: flex-end;
 }
 
-#login{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 30px;
-    grid-column: 1/3;
+.input-logo_container{
+    width: 100%;
+}
+
+.input-logo_container input{
+    width: 100%;
 }

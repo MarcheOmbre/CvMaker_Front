@@ -78,7 +78,7 @@ const projectsDiv = document.getElementById("projects");
 const hobbiesDiv = document.getElementById("hobbies");
 const removeCssButton = document.getElementById("css-remove_button");
 const customCssInput = document.getElementById("custom-css_input");
-const alertElement = document.getElementById("alert");
+const message = document.getElementById("message");
 const frame = document.getElementById("preview");
 
 const encapsulationArrowTemplate = document.getElementById("encapsulation-arrow_template");
@@ -166,9 +166,8 @@ async function importFromJson(dataJson) {
             dt.items.add(new File([blob], 'image.jpg'));
             photoInput.files = dt.files;
         }
-        
-        refreshImage();
     }
+    refreshImage();
     
     if(dataJson.customCss) {
         const blob = new Blob([dataJson.customCss], {type: 'text/css'});
@@ -347,7 +346,7 @@ function extractHobbies() {
 function refreshImage() {
     
     const hasFile = photoInput.files.length > 0 && photoInput.files[0];
-
+    
     photoReader.style.display = hasFile ?  "block" : "none";
     removePhotoButton.style.display = hasFile ?  "block" : "none";
     
@@ -467,6 +466,7 @@ function addLink(linkName = "", linkValue = "") {
     children[2].onclick = _ => {
         encapsulated.remove();
         refreshFunction();
+        refreshElementsArrows(linksDiv);
     }
 
     linksDiv.append(encapsulated);
@@ -488,6 +488,7 @@ function addSkill(skillName = "") {
     children[1].onclick = _ => {
         encapsulated.remove();
         refreshFunction();
+        refreshElementsArrows(skillsDiv);
     }
 
     skillsDiv.append(encapsulated);
@@ -518,6 +519,7 @@ function addWork(title = "", company = "", fromDate = Date.now(), toDate = Date.
     children[1].children[1].onclick = _ => {
         encapsulated.remove();
         refreshFunction()
+        refreshElementsArrows(worksDiv);
     }
 
     worksDiv.append(encapsulated);
@@ -541,6 +543,7 @@ function addEducation(title = "", date = Date.now()) {
     children[2].onclick = _ => {
         encapsulated.remove();
         refreshFunction();
+        refreshElementsArrows(educationsDiv);
     }
 
     educationsDiv.append(encapsulated);
@@ -572,7 +575,8 @@ function addLanguage(level = 0, name = "") {
     const encapsulated = encapsulateInMovable(templateClone, refreshFunction);
     children[2].onclick = _ => {
         encapsulated.remove();
-        refreshFunction()
+        refreshFunction();
+        refreshElementsArrows(languagesDiv);
     }
 
     languagesDiv.append(encapsulated);
@@ -598,6 +602,7 @@ function addProject(title = "", date = Date.now(), description = "") {
     children[1].children[1].onclick = _ => {
         encapsulated.remove();
         refreshFunction();
+        refreshElementsArrows(projectsDiv);
     }
 
     projectsDiv.append(encapsulated);
@@ -618,6 +623,7 @@ function addHobby(name = "") {
     children[1].onclick = _ => {
         encapsulated.remove();
         refreshFunction();
+        refreshElementsArrows(hobbiesDiv);
     }
 
     hobbiesDiv.append(encapsulated);
@@ -632,6 +638,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             return;
         }
 
+        document.getElementById("back_button").onclick = _ => location.assign("../Listing/index.html");
         systemLanguageSelect.onchange = async function (event) {
             let index = 0;
             for (let i = 0; i < systemLanguageSelect.options.length; i++) {
@@ -640,6 +647,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                 break;
             }
             systemLanguageSelect.selectedIndex = index;
+
+            await importFromJson(await generateJson());
             await refreshViewerJson();
         };
         removePhotoButton.onclick = _ => {
@@ -687,13 +696,13 @@ document.addEventListener("DOMContentLoaded", async function () {
             const cvId = sessionStorage.getItem(CvIdItemKey);
             
             await SendRequest("POST", localStorage.getItem(TokenKey), null, APILink + "Cv/SetContent/",
-                new SetContentDto(cvId, generatedJson.content, null, err => alertElement.textContent = err));
+                new SetContentDto(cvId, generatedJson.content, null, err => showMessage(message, err, MessageClass.Error)));
 
             await SendRequest("POST", localStorage.getItem(TokenKey), null, APILink + "Cv/SetImage/",
-                new SetContentDto(cvId, generatedJson.image), null, err => alertElement.textContent = err);
+                new SetContentDto(cvId, generatedJson.image), null, err => showMessage(message, err, MessageClass.Error));
 
             await SendRequest("POST", localStorage.getItem(TokenKey), null, APILink + "Cv/SetCustomCss/",
-                new SetContentDto(cvId, generatedJson.customCss), null, err => alertElement.textContent = err);
+                new SetContentDto(cvId, generatedJson.customCss), null, err => showMessage(message, err, MessageClass.Error));
             
             saveButton.disabled = false;
         };
@@ -711,6 +720,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             const file = JSON.parse(res);
             await importFromJson(file);
             await refreshViewerJson();
-        }, res => alertElement.textContent = res);
+        }, res => showMessage(message, res, MessageClass.Error));
     }
 )

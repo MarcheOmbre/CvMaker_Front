@@ -15,9 +15,12 @@
 }
 
 const cvsParent = document.getElementById("cvs");
-const alert = document.getElementById("alert");
+const message = document.getElementById("message");
 const createButton = document.getElementById("create_button");
 const cvItemTemplate = document.getElementById("cv-item_template");
+const cvFeedback = document.getElementById("cv_feedback");
+const noCVContent = "No cv uploaded, please create one";
+const loadingContent = "Loading...";
 
 
 async function addCv(cv) {
@@ -40,7 +43,7 @@ async function addCv(cv) {
             },
             res => {
                 children[0].value = cv.name
-                alert.textContent = res;
+                showMessage(message, res, MessageClass.Error)
             });
     }
     children[1].onclick = () => {
@@ -54,8 +57,13 @@ async function addCv(cv) {
 
             await SendRequest("DELETE", localStorage.getItem(TokenKey), parameters,
                 APILink + `Cv/Delete/`, null,
-                _ => templateClone.remove(),
-                res => alert.textContent = res);
+                _ => {
+                    templateClone.remove()
+                    
+                    if(cvsParent.children.length === 1)
+                        cvFeedback.textContent = noCVContent;
+                },
+                res => showMessage(message, res, MessageClass.Error));
         }
     }
 
@@ -63,17 +71,27 @@ async function addCv(cv) {
 }
 
 async function reloadCvs() {
+
+    cvFeedback.textContent = loadingContent;
+    const children = cvsParent.children;
+    for(let i = children.length-1; i >= 0; i--){
+        if(children[i].tagName !== "P")
+            children[i].remove();
+    }
+    
     await SendRequest("GET", localStorage.getItem(TokenKey), null, APILink + "Cv/GetAll", null,
         async function(res)
         {
-            cvsParent.innerHTML = "";
+
   
             const cvs = JSON.parse(res);
 
             for (const cv of cvs)
                 await addCv(cv);
 
-        }, res => alert.textContent = res);
+            cvFeedback.textContent = cvs.length === 0 ? noCVContent : "";
+
+        }, res => showMessage(message, res, MessageClass.Error));
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
@@ -90,9 +108,17 @@ document.addEventListener("DOMContentLoaded", async function () {
     parameters.push(new KeyPairValue("name", "CV"));
     createButton.onclick = async function() 
     {
+        createButton.disabled = true;
+        
         await SendRequest("PUT", localStorage.getItem(TokenKey), parameters,
             APILink + "Cv/Create", null,
-            _ => reloadCvs(),
-            res => alert.textContent = res)
+            _ =>{
+                createButton.disabled = false;
+                reloadCvs()
+            },
+            res =>{
+                showMessage(message, res, MessageClass.Error);
+                createButton.disabled = false;
+            });
     };
 })

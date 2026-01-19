@@ -1,7 +1,7 @@
 ﻿const passwordInput = document.getElementById("password_input");
 const passwordConfirmationInput = document.getElementById("password-confirmation_input");
 const resetButton = document.getElementById("reset_button");
-const alert = document.getElementById("alert");
+const message = document.getElementById("message");
 
 class ResetPasswordDto {
     constructor(password, passwordConfirmation) {
@@ -18,21 +18,16 @@ class ResetPasswordDto {
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
-
-    if (checkIsLogged()) {
-        location.assign("./Listing/index.html")
-        return;
-    }
-
+    
     resetButton.onclick = async _ => {
 
         if (passwordInput.value === "") {
-            alert.textContent = "Password can't be null";
+            showMessage(message, "Password can't be null", MessageClass.Error);
             return;
         }
 
         if (passwordConfirmationInput.value !== passwordInput.value) {
-            alert.textContent = "Passwords doesn't match";
+            showMessage(message, "Passwords doesn't match", MessageClass.Error);
             return;
         }
 
@@ -43,11 +38,17 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         resetButton.disabled = true;
         
-        if(!isString(passwordInput.value) || passwordInput.value.trim() === "")
-            alert.textContent = "Password can't be empty";
+        if(!isString(passwordInput.value) || passwordInput.value.trim() === ""){
+            showMessage(message, "Password can't be null", MessageClass.Error);
+            resetButton.disabled = false;
+            return;
+        }
         
-        if(passwordInput.value !== passwordConfirmationInput.value)
-            alert.textContent = "Passwords doesn't match";
+        if(passwordInput.value !== passwordConfirmationInput.value){
+            showMessage(message, "Passwords doesn't match", MessageClass.Error);
+            resetButton.disabled = false;
+            return;
+        }
         
         await SendRequest("POST", token, null,
             APILink + "Authentification/ResetPassword",
@@ -57,9 +58,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 resetButton.disabled = false;
 
                 if (res.status === 401)
-                    alert.textContent = "Unauthorized : the token is invalid";
+                    showMessage(message, "Unauthorized : the token is invalid", MessageClass.Error);
                 else
-                    alert.textContent = res;
+                    showMessage(message, res, MessageClass.Error);
             });
     }
 
