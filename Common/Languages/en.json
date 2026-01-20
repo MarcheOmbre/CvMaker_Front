@@ -1,22 +1,22 @@
 ﻿{
   "key": "en",
-  "ContactTypes": [
+  "contactTypes": [
     "Email",
     "Phone",
     "Address"
   ],
-  "LanguageLevels": [
+  "languageLevels": [
     "Beginner",
     "Intermediate",
     "Professional proficiency",
     "Advanced",
     "Native"
   ],
-  "AboutMeTitle": "About me",
-  "SkillsTitle": "Skills",
-  "WorkTitle": "Work",
-  "EducationTitle": "Education",
-  "LanguagesTitle": "Languages",
-  "ProjectsTitle": "Projects",
-  "HobbiesTitle": "Hobbies"
+  "aboutMeTitle": "About me",
+  "skillsTitle": "Skills",
+  "workTitle": "Work",
+  "educationTitle": "Education",
+  "languagesTitle": "Languages",
+  "projectsTitle": "Projects",
+  "hobbiesTitle": "Hobbies"
 }

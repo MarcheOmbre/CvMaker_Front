@@ -157,8 +157,17 @@ section .content ul, ul.content{
 }
 
 .link-item{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
     padding: 2px;
     background-color: #ecf3ff;
+}
+
+.link-item a{
+    color: black;
 }
 
 /* 

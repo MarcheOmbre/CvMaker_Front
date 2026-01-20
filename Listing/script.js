@@ -24,15 +24,16 @@ const loadingContent = "Loading...";
 
 
 async function addCv(cv) {
-    if (!isString(cv.name) || cv.name.trim() === "")
+    if (isNotStringOrEmpty(cv.name))
         throw new Error("Name can't be empty")
 
     const templateClone = document.importNode(cvItemTemplate.content, true).children[0];
     const children = templateClone.children;
+    children[0].maxLength = MaxNameLength;
     children[0].value = cv.name;
     children[0].onchange = async function()
     {
-        if (!isString(children[0].value) || children[0].value.trim() === "") {
+        if (isNotStringOrEmpty(children[0].value)) {
             children[0].value = cv.name;
             return;
         }
@@ -78,18 +79,19 @@ async function reloadCvs() {
         if(children[i].tagName !== "P")
             children[i].remove();
     }
+
+    createButton.style.display = "none";
     
     await SendRequest("GET", localStorage.getItem(TokenKey), null, APILink + "Cv/GetAll", null,
         async function(res)
         {
-
-  
             const cvs = JSON.parse(res);
 
             for (const cv of cvs)
                 await addCv(cv);
 
             cvFeedback.textContent = cvs.length === 0 ? noCVContent : "";
+            createButton.style.display = cvs.length < MaxCvCount ? "block" : "none";
 
         }, res => showMessage(message, res, MessageClass.Error));
 }

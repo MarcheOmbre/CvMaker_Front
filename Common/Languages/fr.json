@@ -1,22 +1,22 @@
 ﻿{
   "key": "fr",
-  "ContactTypes": [
+  "contactTypes": [
     "Email",
     "Téléphone",
     "Adresse"
   ],
-  "LanguageLevels": [
+  "languageLevels": [
     "Débutant",
     "Intermédiaire",
     "Technique et conversationnel",
     "Avancé",
     "Natif"
   ],
-  "AboutMeTitle": "À propos de moi",
-  "SkillsTitle": "Compétences",
-  "WorkTitle": "Expériences professionnelles",
-  "EducationTitle": "Éducation",
-  "LanguagesTitle": "Langues",
-  "ProjectsTitle": "Projects",
-  "HobbiesTitle": "Centres d'intérêt"
+  "aboutMeTitle": "À propos de moi",
+  "skillsTitle": "Compétences",
+  "workTitle": "Expériences professionnelles",
+  "educationTitle": "Éducation",
+  "languagesTitle": "Langues",
+  "projectsTitle": "Projects",
+  "hobbiesTitle": "Centres d'intérêt"
 }

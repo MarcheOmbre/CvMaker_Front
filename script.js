@@ -27,6 +27,9 @@ document.addEventListener("DOMContentLoaded", async function ()
         location.assign("./Listing/index.html")
         return;
     }
+
+    emailInput.maxLength = MaxEmailLength;
+    passwordInput.maxLength = MaxPasswordLength;
     
     loginButton.onclick = async _ => {
         

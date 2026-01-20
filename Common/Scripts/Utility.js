@@ -11,3 +11,15 @@ function showMessage(element, message, type) {
         element.style.display = "none"
     }, 3000);
 }
+
+function isMatchingMailPattern(str){
+    return str.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+}
+
+function checkIsLogged(){
+    return localStorage.getItem(TokenKey) !== null;
+}
+
+function isNotStringOrEmpty(str){
+    return !isString(str) || str.trim() === "";
+}

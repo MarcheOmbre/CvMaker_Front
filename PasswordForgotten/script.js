@@ -21,6 +21,8 @@ class RetrievePasswordDto {
 
 document.addEventListener("DOMContentLoaded", async function () {
 
+    emailInput.maxLength = MaxEmailLength;
+    
     // Link buttons
     retrieveButton.onclick = async function() {
 

@@ -19,6 +19,9 @@ class ResetPasswordDto {
 
 document.addEventListener("DOMContentLoaded", async function () {
     
+    passwordInput.maxLength = MaxPasswordLength;
+    passwordConfirmationInput.maxLength = MaxPasswordLength;
+    
     resetButton.onclick = async _ => {
 
         if (passwordInput.value === "") {
@@ -38,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         resetButton.disabled = true;
         
-        if(!isString(passwordInput.value) || passwordInput.value.trim() === ""){
+        if(isNotStringOrEmpty(passwordInput.value)){
             showMessage(message, "Password can't be null", MessageClass.Error);
             resetButton.disabled = false;
             return;

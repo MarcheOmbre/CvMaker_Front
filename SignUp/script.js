@@ -34,6 +34,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         return;
     }
     
+    emailInput.maxLength = MaxEmailLength;
+    passwordInput.maxLength = MaxPasswordLength;
+    passwordConfirmationInput.maxLength = MaxPasswordLength;
+    
     signupButton.onclick = async _ => {
         
         if(!isMatchingMailPattern(emailInput.value))

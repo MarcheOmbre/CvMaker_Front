@@ -1,4 +1,6 @@
 ﻿const printButton = document.getElementById("print_button");
+const markdownToHtmlConverter = new showdown.Converter();
+
 
 const nameEntry = document.getElementById("header_name");
 const professionEntry = document.getElementById("header_profession");
@@ -36,7 +38,7 @@ function fillSection(section, title, fillSection) {
 async function refreshCss(css) {
     
     let cssContent = DOMPurify.sanitize(css);
-    if(!cssContent || !isString(cssContent))
+    if(isNotStringOrEmpty(cssContent))
         cssContent = await fetch("../Common/Template/style.css").then(response => response.text());
 
     const lastCss = document.getElementById("css");
@@ -50,22 +52,22 @@ async function refreshCss(css) {
 }
 
 function refreshSystemLanguage(language) {
-    if (isString(language))
+    if (!isNotStringOrEmpty(language))
         document.documentElement.lang = DOMPurify.sanitize(language);
 }
 
-function refreshName(name) {
-    if (!name || isString(name))
-        nameEntry.textContent = DOMPurify.sanitize(name);
+function refreshTitle(title) {
+    if (isString(title))
+        nameEntry.innerHTML = DOMPurify.sanitize(title);
 }
 
 function refreshProfession(profession) {
-    if (!profession || isString(profession))
-        professionEntry.textContent = DOMPurify.sanitize(profession);
+    if (isString(profession))
+        professionEntry.innerHTML = DOMPurify.sanitize(profession);
 }
 
 function refreshImage(image) {
-    if (!image || isString(image))
+    if (isString(image))
         imageEntry.src = DOMPurify.sanitize(image);
     
     imageEntry.style.display = image  ? "block" : "none";
@@ -80,11 +82,11 @@ function refreshContacts(contacts) {
 
     contacts.forEach(element => {
 
-        if (!isString(element.value))
+        if(!Contact.IsTypeContact(element))
             return;
 
         const templateClone = document.importNode(contactItemTemplate.content, true).children[0];
-        templateClone.textContent = DOMPurify.sanitize(element.value);
+        templateClone.innerHTML = DOMPurify.sanitize(element.value);
         contactsSection.appendChild(templateClone);
     });
 }
@@ -98,11 +100,15 @@ function refreshLinks(links) {
 
     links.forEach(element => {
 
-        if (!isString(element.name) || !isString(element.value))
+        if(!Link.IsTypeLink(element))
             return;
 
         const templateClone = document.importNode(linkItemTemplate.content, true).children[0];
-        templateClone.innerHTML = DOMPurify.sanitize(element.name + ": " + element.value);
+        const children = templateClone.children;
+        children[0].innerHTML = DOMPurify.sanitize(element.name);
+        const link = DOMPurify.sanitize(element.url);
+        children[1].href = link;
+        children[1].textContent = link;
         linksSection.appendChild(templateClone);
     });
 }
@@ -117,28 +123,9 @@ function refreshAboutMe(title, text) {
         content.innerHTML = "";
         
         const templateClone = document.importNode(aboutMeTemplate.content, true).children[0];
-        templateClone.innerHTML = DOMPurify.sanitize(text);
+        templateClone.innerHTML = DOMPurify.sanitize(markdownToHtmlConverter.makeHtml(text));
         content.appendChild(templateClone);
     });
-}
-
-function refreshSkills(title, skills) {
-    if (!isString(title) || !skills || !Array.isArray(skills))
-        return;
-
-    skillsSection.children[1].innerHTML = "";
-
-    fillSection(skillsSection, title, content =>
-        skills.forEach(element => {
-
-            if (!isString(element))
-                return;
-
-            const templateClone = document.importNode(skillItemTemplate.content, true).children[0];
-            templateClone.textContent = DOMPurify.sanitize(element);
-            content.appendChild(templateClone);
-        }));
-
 }
 
 function refreshWorks(title, works) {
@@ -151,37 +138,33 @@ function refreshWorks(title, works) {
     this.fillSection(worksSection, title, content => {
         works.forEach(element => {
 
-            if (!isString(element.name) || !isString(element.company) || !isString(element.description))
+            if(!Work.IsTypeWork(element))
                 return;
 
-            // Format date
-            const fromDate = new Date(element.fromDate);
-            const toDate = new Date(element.toDate);
-
             // Format month to force xx/yyyy format
-            let month = (fromDate.getMonth() + 1).toString();
+            let month = (element.from.getMonth() + 1).toString();
             if (month.length === 1)
                 month = "0" + month;
 
-            let stringDate = isDate(fromDate) ? `${month}/${fromDate.getFullYear()}` : "";
-            if (isDate(toDate)) {
+            let stringDate = `${month}/${element.from.getFullYear()}`;
+            if (element.to) {
                 if (stringDate !== "")
                     stringDate += " - ";
 
                 // Format month to force xx/yyyy format
-                month = (toDate.getMonth() + 1).toString();
+                month = (element.to.getMonth() + 1).toString();
                 if (month.length === 1)
                     month = "0" + month;
 
-                stringDate += `${month}/${toDate.getFullYear()}`;
+                stringDate += `${month}/${element.to.getFullYear()}`;
             }
 
             const templateClone = document.importNode(workItemTemplate.content, true).children[0];
             const children = templateClone.children;
-            children[0].children[0].textContent = DOMPurify.sanitize(element.name);
-            children[0].children[1].textContent = DOMPurify.sanitize(element.company);
-            children[0].children[2].textContent = DOMPurify.sanitize(stringDate);
-            children[1].innerHTML = DOMPurify.sanitize(element.description);
+            children[0].children[0].innerHTML = DOMPurify.sanitize(element.title);
+            children[0].children[1].innerHTML = DOMPurify.sanitize(element.company);
+            children[0].children[2].textContent = stringDate;
+            children[1].innerHTML = DOMPurify.sanitize(markdownToHtmlConverter.makeHtml(element.description));
 
             content.appendChild(templateClone);
         })
@@ -198,13 +181,13 @@ function refreshEducations(title, educations) {
     fillSection(educationSection, title, content => {
         educations.forEach(element => {
 
-            if (!isString(element.name))
+            if(!Education.IsTypeEducation(element))
                 return;
 
             const templateClone = document.importNode(educationItemTemplate.content, true).children[0];
             const children = templateClone.children;
-            children[0].textContent = DOMPurify.sanitize(element.name);
-            children[1].textContent = DOMPurify.sanitize(isString(element.date) ? new Date(element.date).getFullYear() : "");
+            children[0].innerHTML = DOMPurify.sanitize(element.title);
+            children[1].textContent = element.date.getFullYear();
 
             content.appendChild(templateClone);
         })
@@ -220,11 +203,11 @@ function refreshLanguages(title, languages, languageLevels) {
     fillSection(languagesSection, title, content => {
         languages.forEach(element => {
             
-            if (!isString(element.name) || !isNumeric(element.level) || element >= languageLevels.length)
+            if(!Language.IsTypeLanguage(element))
                 return;
 
             const templateClone = document.importNode(languageItemTemplate.content, true).children[0];
-            templateClone.textContent = DOMPurify.sanitize(`${element.name} (${languageLevels[element.level]})`);
+            templateClone.innerHTML = DOMPurify.sanitize(`${element.name} (${languageLevels[element.level]})`);
 
             content.appendChild(templateClone);
         })
@@ -233,7 +216,7 @@ function refreshLanguages(title, languages, languageLevels) {
 }
 
 function refreshProjects(title, projects) {
-
+    
     if (!isString(title) || !projects || !Array.isArray(projects))
         return;
 
@@ -242,18 +225,37 @@ function refreshProjects(title, projects) {
     fillSection(projectsSection, title, content => {
         projects.forEach(element => {
 
-            if (!isString(element.name) || !isString(element.description))
+             if(!Project.IsTypeProject(element))
                 return;
 
             const templateClone = document.importNode(projectItemTemplate.content, true).children[0];
             const children = templateClone.children;
-            children[0].children[0].textContent = DOMPurify.sanitize(element.name);
-            children[0].children[1].textContent = DOMPurify.sanitize(isString(element.date) ? new Date(element.date).getFullYear() : "");
-            children[1].innerHTML = DOMPurify.sanitize(element.description);
+            children[0].children[0].innerHTML = DOMPurify.sanitize(element.title);
+            children[0].children[1].textContent = element.date.getFullYear();
+            children[1].innerHTML = DOMPurify.sanitize(markdownToHtmlConverter.makeHtml(element.description));
             
             content.appendChild(templateClone);
         })
     });
+
+}
+
+function refreshSkills(title, skills) {
+    if (!isString(title) || !skills || !Array.isArray(skills))
+        return;
+
+    skillsSection.children[1].innerHTML = "";
+
+    fillSection(skillsSection, title, content =>
+        skills.forEach(element => {
+
+            if(!Skill.IsTypeSkill(element))
+                return;
+
+            const templateClone = document.importNode(skillItemTemplate.content, true).children[0];
+            templateClone.innerHTML = DOMPurify.sanitize(element.name);
+            content.appendChild(templateClone);
+        }));
 
 }
 
@@ -267,11 +269,11 @@ function refreshHobbies(title, hobbies) {
     fillSection(hobbiesSection, title, content => {
         hobbies.forEach(element => {
 
-            if (!isString(element))
+            if(!Hobby.IsTypeHobby(element))
                 return;
 
             const templateClone = document.importNode(hobbyItemTemplate.content, true).children[0];
-            templateClone.textContent = DOMPurify.sanitize(element);
+            templateClone.innerHTML = DOMPurify.sanitize(element.name);
             content.appendChild(templateClone);
         })
     });
@@ -282,27 +284,23 @@ async function refreshFromJson(dataJson) {
     
     if (!dataJson)
         return
-    
-    if(isString(dataJson.content))
-    {
-        const content = JSON.parse(dataJson.content);
-        const systemLanguage = await fetch(content.SystemLanguage).then(response => response.json());
-        
-        refreshSystemLanguage(systemLanguage.key);
-        refreshName(content.Name);
-        refreshAboutMe(systemLanguage.AboutMeTitle, content.AboutMe);
-        refreshProfession(content.Profession);
-        refreshImage(dataJson.image);
-        refreshContacts(content.Contacts);
-        refreshLinks(content.Links);
-        refreshSkills(systemLanguage.SkillsTitle, content.Skills);
-        refreshWorks(systemLanguage.WorkTitle, content.WorkBlocs);
-        refreshEducations(systemLanguage.EducationTitle, content.EducationBlocs);
-        refreshLanguages(systemLanguage.LanguagesTitle, content.Languages, systemLanguage.LanguageLevels);
-        refreshProjects(systemLanguage.ProjectsTitle, content.Projects);
-        refreshHobbies(systemLanguage.HobbiesTitle, content.Hobbies);   
-    }
-    
+
+    const systemLanguage = await fetch(dataJson.systemLanguage).then(response => response.json());
+
+    refreshSystemLanguage(systemLanguage.key);
+    refreshTitle(dataJson.title);
+    refreshAboutMe(systemLanguage.aboutMeTitle, dataJson.aboutMe);
+    refreshProfession(dataJson.profession);
+    refreshImage(dataJson.image);
+    refreshContacts(dataJson.contacts);
+    refreshLinks(dataJson.links);
+    refreshSkills(systemLanguage.skillsTitle, dataJson.skills);
+    refreshWorks(systemLanguage.workTitle, dataJson.works);
+    refreshEducations(systemLanguage.educationTitle, dataJson.educations);
+    refreshLanguages(systemLanguage.languagesTitle, dataJson.languages, systemLanguage.languageLevels);
+    refreshProjects(systemLanguage.projectsTitle, dataJson.projects);
+    refreshHobbies(systemLanguage.hobbiesTitle, dataJson.hobbies);
+
     await refreshCss(dataJson.customCss);
 }
 

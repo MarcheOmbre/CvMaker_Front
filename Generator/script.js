@@ -1,71 +1,8 @@
-﻿class Contact {
-    constructor(type, value) {
-        this.type = type;
-        this.value = value;
-    }
-
-}
-
-class Link {
-    constructor(name, value) {
-        this.name = name;
-        this.value = value;
-    }
-}
-
-class WorkBloc {
-    constructor(name, company, fromDate, toDate, description) {
-        this.name = name;
-        this.company = company;
-        this.fromDate = fromDate;
-        this.toDate = toDate;
-        this.description = description;
-    }
-}
-
-class EducationBloc {
-    constructor(name, date) {
-        this.name = name;
-        this.date = date;
-    }
-}
-
-class Project {
-    constructor(name, date, description) {
-        this.name = name;
-        this.date = date;
-        this.description = description;
-    }
-}
-
-class Language {
-    constructor(name, level) {
-        this.name = name;
-        this.level = level;
-    }
-}
-
-class SetContentDto {
-    constructor(id, content) {
-
-        if (!isNumeric(id))
-            throw new Error("Id must be numeric");
-
-        if (content && !isString(content))
-            throw new Error("Content must be string");
-
-        this.cvId = id;
-        this.content = content;
-    }
-}
-
-
-let systemJson;
-const systemLanguageSelect = document.getElementById("system-language");
+﻿const systemLanguageSelect = document.getElementById("system-language");
 const removePhotoButton = document.getElementById("photo-remove_button");
 const photoInput = document.getElementById("photo-input");
 const photoReader = document.getElementById("photo-reader");
-const nameInput = document.getElementById("name_input");
+const titleInput = document.getElementById("title_input");
 const professionInput = document.getElementById("profession_input");
 const aboutMeInput = document.getElementById("about-me_input");
 const contactsDiv = document.getElementById("contacts");
@@ -78,8 +15,19 @@ const projectsDiv = document.getElementById("projects");
 const hobbiesDiv = document.getElementById("hobbies");
 const removeCssButton = document.getElementById("css-remove_button");
 const customCssInput = document.getElementById("custom-css_input");
+const removeHtmlButton = document.getElementById("html-remove_button");
+const customHtmlInput = document.getElementById("custom-html_input");
 const message = document.getElementById("message");
 const frame = document.getElementById("preview");
+
+const addContactButton = document.getElementById("add-contact");
+const addLinkButton = document.getElementById("add-link");
+const addWorkButton = document.getElementById("add-work");
+const addEducationButton = document.getElementById("add-education");
+const addProjectButton = document.getElementById("add-project");
+const addLanguageButton = document.getElementById("add-language");
+const addSkillButton = document.getElementById("add-skill");
+const addHobbyButton = document.getElementById("add-hobby");
 
 const encapsulationArrowTemplate = document.getElementById("encapsulation-arrow_template");
 const contactItemTemplate = document.getElementById("contact-item_template");
@@ -90,6 +38,8 @@ const educationItemTemplate = document.getElementById("education-item_template")
 const languageItemTemplate = document.getElementById("language-item_template");
 const projectItemTemplate = document.getElementById("project-item_template");
 const hobbyItemTemplate = document.getElementById("hobby-item_template");
+
+let languageSystem;
 
 
 async function importFromJson(dataJson) {
@@ -106,78 +56,59 @@ async function importFromJson(dataJson) {
     projectsDiv.innerHTML = "";
     hobbiesDiv.innerHTML = "";
 
-    // Restore the fields
-    const contentJson = JSON.parse(dataJson.content) ?? "";
-
-    if (contentJson) {
-
-        systemJson = await fetch(contentJson.SystemLanguage).then(response => response.json());
-
-        if (isString(contentJson.Name))
-            nameInput.value = contentJson.Name;
-
-        if (isString(contentJson.Profession))
-            professionInput.value = contentJson.Profession;
-
-        if (isString(contentJson.AboutMe))
-            aboutMeInput.value = contentJson.AboutMe;
-
-        if (contentJson.Contacts)
-            contentJson.Contacts.forEach(element => {
-                addContact(element.type, element.value)
-            });
-
-        if (contentJson.Links)
-            contentJson.Links.forEach(element => {
-                addLink(element.name, element.value)
-            });
-
-        if (contentJson.WorkBlocs) {
-            contentJson.WorkBlocs.forEach(element => addWork(element.name, element.company,
-                element.fromDate, element.toDate, element.description));
-        }
-
-        if (contentJson.EducationBlocs) {
-            contentJson.EducationBlocs.forEach(element => addEducation(element.name, element.date));
-        }
-
-        if (contentJson.Projects)
-            contentJson.Projects.forEach(element => addProject(element.name, element.date, element.description));
-
-        if (contentJson.Languages)
-            contentJson.Languages.forEach(element => addLanguage(element.level, element.name));
-
-        if (contentJson.Skills)
-            contentJson.Skills.forEach(element => addSkill(element));
-
-        if (contentJson.Hobbies)
-            contentJson.Hobbies.forEach(element => addHobby(element));
-    } else {
-        systemJson = await fetch(systemLanguageSelect.value).then(response => response.json());
-    }
-
-    if (dataJson.image) {
-        if (!isString(dataJson.image) || dataJson.image.length === 0)
-            return;
-
-        const blob = await fetch(dataJson.image).then(response => response.blob());
+    // Get the system language
+    let systemLanguagePath = systemLanguageSelect.value;
+    if(!isNotStringOrEmpty(dataJson.systemLanguage))
+        systemLanguagePath = dataJson.systemLanguage;
+    languageSystem = await fetch(systemLanguagePath).then(response => response.json());
+    
+    // Fill the fields
+    titleInput.value = DOMPurify.sanitize(dataJson.title);
+    professionInput.value = DOMPurify.sanitize(dataJson.profession);
+    aboutMeInput.value = DOMPurify.sanitize(dataJson.aboutMe);
+    dataJson.contacts.forEach(element => addContact(new Contact(element)));
+    dataJson.links.forEach(element => addLink(new Link(element)));
+    dataJson.works.forEach(element => addWork(new Work(element)));
+    dataJson.educations.forEach(element => addEducation(new Education(element)));
+    dataJson.projects.forEach(element => addProject(new Project(element)));
+    dataJson.languages.forEach(element => addLanguage(new Language(element)));
+    dataJson.skills.forEach(element => addSkill(new Skill(element)));
+    dataJson.hobbies.forEach(element => addHobby(new Hobby(element)));
+    if (!isNotStringOrEmpty(dataJson.image)) {
+        
+        const sanitizedImage = DOMPurify.sanitize(dataJson.image);
+        const blob = await fetch(sanitizedImage).then(response => response.blob());
         if (blob) {
             const dt = new DataTransfer();
             dt.items.add(new File([blob], 'image.jpg'));
             photoInput.files = dt.files;
+            refreshImage(photoInput.files[0]);
         }
     }
-    refreshImage();
-    
-    if(dataJson.customCss) {
-        const blob = new Blob([dataJson.customCss], {type: 'text/css'});
-        if(blob){
-            const dt = new DataTransfer();
+    if (!isNotStringOrEmpty(dataJson.customCss)) {
         
+        const sanitizedCss = DOMPurify.sanitize(dataJson.customCss);
+        const blob = new Blob([sanitizedCss], {type: 'text/css'});
+        if (blob) {
+            const dt = new DataTransfer();
+
             dt.items.add(new File([blob], 'customCss.css'));
             customCssInput.files = dt.files;
         }
-        await refreshCustomCss();
+        await refreshCustomCss(sanitizedCss);
+    }
+    
+    if (!isNotStringOrEmpty(dataJson.customHtml)) {
+       
+       const sanitizedHtml = DOMPurify.sanitize(dataJson.customHtml);
+        const blob = new Blob([sanitizedHtml], {type: 'text/html'});
+        if (blob) {
+            const dt = new DataTransfer();
+
+            dt.items.add(new File([blob], 'customHtml.html'));
+            customHtmlInput.files = dt.files;
+        }
+        await refreshCustomHtml(sanitizedHtml);
     }
 
     document.body.style.display = "block";
@@ -186,28 +117,18 @@ async function importFromJson(dataJson) {
 async function generateJson() {
     
     const jsonObject = {};
-
-    /*
-     *
-     * Content
-     * 
-     */
-    jsonObject.content = "";
-
-    const contentObject = {}
-    contentObject.SystemLanguage = DOMPurify.sanitize(systemLanguageSelect.value);
-    contentObject.Name = extractName();
-    contentObject.Profession = extractProfession();
-    contentObject.AboutMe = extractAboutMe();
-    contentObject.Contacts = extractContacts();
-    contentObject.Links = extractLinks();
-    contentObject.WorkBlocs = extractWorks();
-    contentObject.EducationBlocs = extractEducations();
-    contentObject.Projects = extractProjects();
-    contentObject.Languages = extractLanguages();
-    contentObject.Skills = extractSkills();
-    contentObject.Hobbies = extractHobbies();
-    jsonObject.content = JSON.stringify(contentObject);
+    jsonObject.systemLanguage = DOMPurify.sanitize(systemLanguageSelect.value);
+    jsonObject.title = extractTitle();
+    jsonObject.profession = extractProfession();
+    jsonObject.aboutMe = extractAboutMe();
+    jsonObject.contacts = extractContacts();
+    jsonObject.links = extractLinks();
+    jsonObject.works = extractWorks();
+    jsonObject.educations = extractEducations();
+    jsonObject.projects = extractProjects();
+    jsonObject.languages = extractLanguages();
+    jsonObject.skills = extractSkills();
+    jsonObject.hobbies = extractHobbies();
 
     /*
      *
@@ -215,7 +136,6 @@ async function generateJson() {
      * 
      */
     jsonObject.image = "";
-
     if (photoInput.files.length > 0 && photoInput.files[0])
         jsonObject.image = DOMPurify.sanitize(await convertFileToBase64(photoInput.files[0]));
 
@@ -228,30 +148,35 @@ async function generateJson() {
     if(customCssInput.files.length > 0 && customCssInput.files[0])
         jsonObject.customCss = DOMPurify.sanitize(await customCssInput.files[0].text());
     
+    /*
+     *
+     * Custom HTML
+     * 
+     */
+    jsonObject.customHtml = "";
+    if(customHtmlInput.files.length > 0 && customHtmlInput.files[0])
+        jsonObject.customHtml = DOMPurify.sanitize(await customHtmlInput.files[0].text());
+    
     return jsonObject;
 }
 
 
-function extractName() {
-    return DOMPurify.sanitize(nameInput.value);
-}
+function extractTitle() {return DOMPurify.sanitize(titleInput.value);}
 
-function extractProfession() {
-    return DOMPurify.sanitize(professionInput.value);
-}
+function extractProfession() {return DOMPurify.sanitize(professionInput.value);}
 
-function extractAboutMe() {
-    return DOMPurify.sanitize(aboutMeInput.value);
-}
+function extractAboutMe() {return DOMPurify.sanitize(aboutMeInput.value);}
 
 function extractContacts() {
 
     const contacts = [];
     [...contactsDiv.children].forEach(element => {
         const children = element.children[1].children;
-        const type = children[0].selectedIndex;
-        const value = DOMPurify.sanitize(children[1].value);
-        contacts.push(new Contact(type, value));
+        
+        const data = {};
+        data.type = children[0].selectedIndex;
+        data.value = DOMPurify.sanitize(children[1].value);
+        contacts.push(new Contact(data));
     });
 
     return contacts;
@@ -262,9 +187,11 @@ function extractLinks() {
     const links = [];
     [...linksDiv.children].forEach(element => {
         const children = element.children[1].children;
-        const name = DOMPurify.sanitize(children[0].value);
-        const value = DOMPurify.sanitize(children[1].value);
-        links.push(new Link(name, value));
+        
+        const data = {};
+        data.name = DOMPurify.sanitize(children[0].value);
+        data.url = DOMPurify.sanitize(children[1].value);
+        links.push(new Link(data));
     });
 
     return links;
@@ -274,12 +201,14 @@ function extractWorks() {
     const works = [];
     [...worksDiv.children].forEach((element, index) => {
         const children = element.children[1].children;
-        const name = DOMPurify.sanitize(children[1].children[0].value);
-        const company = DOMPurify.sanitize(children[3].value);
-        const fromDate = DOMPurify.sanitize(children[5].children[0].value);
-        const toDate = DOMPurify.sanitize(children[5].children[1].value);
-        const description = DOMPurify.sanitize(children[7].value);
-        works.push(new WorkBloc(name, company, fromDate, toDate, description));
+
+        const data = {};
+        data.title = DOMPurify.sanitize(children[1].children[0].value);
+        data.company = DOMPurify.sanitize(children[3].value);
+        data.from = new Date(children[5].children[0].value);
+        data.to = new Date(children[5].children[1].value);
+        data.description = DOMPurify.sanitize(children[7].value);
+        works.push(new Work(data));
     })
 
     return works;
@@ -290,9 +219,11 @@ function extractEducations() {
     const educations = [];
     [...educationsDiv.children].forEach(element => {
         const children = element.children[1].children;
-        const name = DOMPurify.sanitize(children[0].value);
-        const date = DOMPurify.sanitize(children[1].value);
-        educations.push(new EducationBloc(name, date));
+
+        const data = {};
+        data.title = DOMPurify.sanitize(children[0].value);
+        data.date = new Date(children[1].value);
+        educations.push(new Education(data));
     })
 
     return educations;
@@ -302,10 +233,12 @@ function extractProjects() {
     const projects = [];
     [...projectsDiv.children].forEach((element, index) => {
         const children = element.children[1].children;
-        const name = DOMPurify.sanitize(children[1].children[0].value);
-        const date = DOMPurify.sanitize(children[3].value);
-        const description = DOMPurify.sanitize(children[4].value);
-        projects.push(new Project(name, date, description));
+
+        const data = {};
+        data.title = DOMPurify.sanitize(children[1].children[0].value);
+        data.date = new Date(children[3].value);
+        data.description = DOMPurify.sanitize(children[4].value);
+        projects.push(new Project(data));
     })
 
     return projects;
@@ -315,9 +248,11 @@ function extractLanguages() {
     const languages = [];
     [...languagesDiv.children].forEach(element => {
         const children = element.children[1].children;
-        const name = DOMPurify.sanitize(children[0].value);
-        const level = children[1].selectedIndex;
-        languages.push(new Language(name, level));
+
+        const data = {};
+        data.name = DOMPurify.sanitize(children[0].value);
+        data.level = children[1].selectedIndex;
+        languages.push(new Language(data));
     })
 
     return languages;
@@ -327,7 +262,10 @@ function extractSkills() {
 
     const skills = [];
     [...skillsDiv.children].forEach(element => {
-        skills.push(DOMPurify.sanitize(element.children[1].children[0].value));
+
+        const data = {};
+        data.name = DOMPurify.sanitize(element.children[1].children[0].value);
+        skills.push(data);
     })
 
     return skills;
@@ -337,50 +275,57 @@ function extractHobbies() {
 
     const hobbies = [];
     [...hobbiesDiv.children].forEach(element => {
-        hobbies.push(DOMPurify.sanitize(element.children[1].children[0].value));
+
+        const data = {};
+        data.name = DOMPurify.sanitize(element.children[1].children[0].value);
+        hobbies.push(data);
     })
 
     return hobbies;
 }
 
-function refreshImage() {
+function refreshImage(image = null) {
     
-    const hasFile = photoInput.files.length > 0 && photoInput.files[0];
+    photoReader.style.display = image ?  "block" : "none";
+    removePhotoButton.style.display = image ?  "block" : "none";
     
-    photoReader.style.display = hasFile ?  "block" : "none";
-    removePhotoButton.style.display = hasFile ?  "block" : "none";
-    
-    if (hasFile) {
+    if (image) {
 
         const fileReader = new FileReader();
         fileReader.onload = function (e) {
             photoReader.src = e.target.result;
         };
-        fileReader.readAsDataURL(photoInput.files[0]);
+        fileReader.readAsDataURL(image);
 
     } else
         photoReader.src = '';
 }
 
-function refreshImagePreview(){
+function refreshImagePreview(image = null){
     
-    if(photoInput.files.length > 0 && photoInput.files[0])
+    if(image)
     {
         const fileReader = new FileReader();
         fileReader.onload = function (e) {
             frame.contentWindow.refreshImage(e.target.result);
         };
-        fileReader.readAsDataURL(photoInput.files[0]);
+        fileReader.readAsDataURL(image);
     }
     else
         frame.contentWindow.refreshImage(null);
 }
 
-async function refreshCustomCss() {
-    const hasFile = customCssInput.files.length > 0 && customCssInput.files[0];
-    removeCssButton.style.display = hasFile ? "block" : "none";
-    const customCss = hasFile ? DOMPurify.sanitize(await customCssInput.files[0].text()) : "";
+async function refreshCustomCss(customCss = "") 
+{
+    const hasCss = !isNotStringOrEmpty(customCss);
+    removeCssButton.style.display = hasCss ? "block" : "none";
     await frame.contentWindow.refreshCss(customCss);
+}
+
+async function refreshCustomHtml(customHtml = "")  {
+    const hasHtml = !isNotStringOrEmpty(customHtml);
+    removeHtmlButton.style.display = hasHtml ? "block" : "none";
+    await frame.contentWindow.refreshCss(customHtml);
 }
 
 function refreshElementsArrows(movableElementsParent) {
@@ -418,216 +363,299 @@ function encapsulateInMovable(htmlElement, refreshFunction) {
 }
 
 
-function addContact(contactType = 0, contactValue = "") {
+function addContact(contact = new Contact()) {
 
-    const refreshFunction = () => frame.contentWindow.refreshContacts(extractContacts());
+    if(!(contact instanceof Contact) || !languageSystem)
+        return;
+    
+    
+    const refreshView = () => frame.contentWindow.refreshContacts(extractContacts());
+    const refreshCreateButton = () => addContactButton.style.display = contactsDiv.children.length < MaxItems ? 'block' : 'none';
 
     const template = document.importNode(contactItemTemplate.content, true).children[0];
     const children = template.children;
 
-    children[0].onchange = refreshFunction;
-    children[1].oninput = refreshFunction;
+    children[0].onchange = refreshView;
+    children[1].maxLength = MaxEmailLength;
+    children[1].oninput = refreshView;
 
-    systemJson.ContactTypes.forEach(element => {
+    languageSystem.contactTypes.forEach(element => {
         const option = document.createElement("option");
         option.textContent = element;
         children[0].append(option);
     });
 
-    if (isNumeric(contactType) && contactType <= children[0].options.length)
-        children[0].selectedIndex = contactType;
+    if (contact.type <= children[0].options.length)
+        children[0].selectedIndex = contact.type;
 
-    children[1].value = contactValue;
+    children[1].value = DOMPurify.sanitize(contact.value);
 
-    const encapsulated = encapsulateInMovable(template, refreshFunction);
+    const encapsulated = encapsulateInMovable(template, refreshView);
     children[2].onclick = _ => {
         encapsulated.remove();
-        refreshFunction();
+        refreshView();
+        refreshCreateButton();
     }
 
     contactsDiv.append(encapsulated);
     refreshElementsArrows(contactsDiv);
+    refreshCreateButton();
 }
 
-function addLink(linkName = "", linkValue = "") {
+function addLink(link = new Link()) {
 
-    const refreshFunction = () => frame.contentWindow.refreshLinks(extractLinks());
+    if(!Link.IsTypeLink(link))
+        return;
+    
+    const refreshView = () => frame.contentWindow.refreshLinks(extractLinks());
+    const refreshCreateButton = () => addLinkButton.style.display = linksDiv.children.length < MaxItems ? 'block' : 'none';
+    
 
     const template = document.importNode(linkItemTemplate.content, true).children[0];
     const children = template.children;
 
-    children[0].oninput = refreshFunction;
-    children[1].oninput = refreshFunction;
+    children[0].maxLength = MaxNameLength;
+    children[0].oninput = refreshView;
+    children[1].maxLength = MaxUrlLength;
+    children[1].oninput = refreshView;
 
-    children[0].value = linkName;
-    children[1].value = linkValue;
+    children[0].value = DOMPurify.sanitize(link.name);
+    children[1].value = DOMPurify.sanitize(link.url)
 
-    const encapsulated = encapsulateInMovable(template, refreshFunction);
+    const encapsulated = encapsulateInMovable(template, refreshView);
     children[2].onclick = _ => {
         encapsulated.remove();
-        refreshFunction();
+        refreshView();
         refreshElementsArrows(linksDiv);
+        refreshCreateButton();
     }
 
     linksDiv.append(encapsulated);
     refreshElementsArrows(linksDiv);
+    refreshCreateButton();
 }
 
-function addSkill(skillName = "") {
+function addWork(work = new Work()) {
 
-    const refreshFunction = () => frame.contentWindow.refreshSkills(systemJson.SkillsTitle, extractSkills());
-
-    const template = document.importNode(skillItemTemplate.content, true).children[0];
-    const children = template.children;
-
-    children[0].oninput = refreshFunction;
-
-    children[0].value = skillName;
-
-    const encapsulated = encapsulateInMovable(template, refreshFunction);
-    children[1].onclick = _ => {
-        encapsulated.remove();
-        refreshFunction();
-        refreshElementsArrows(skillsDiv);
-    }
-
-    skillsDiv.append(encapsulated);
-    refreshElementsArrows(skillsDiv);
-}
-
-function addWork(title = "", company = "", fromDate = Date.now(), toDate = Date.now(), description = "") {
-
-    const refreshFunction = () => frame.contentWindow.refreshWorks(systemJson.WorkTitle, extractWorks());
+    if(!Work.IsTypeWork(work) || !languageSystem)
+        return;
+    
+    const refreshView = () => frame.contentWindow.refreshWorks(languageSystem.workTitle, extractWorks());
+    const refreshCreateButton = () => addWorkButton.style.display = worksDiv.children.length < MaxItems ? 'block' : 'none';
     
     const templateClone = document.importNode(workItemTemplate.content, true).children[0];
     const children = templateClone.children;
 
-    children[1].children[0].oninput = refreshFunction;
-    children[3].oninput = refreshFunction;
-    children[5].children[0].onchange = refreshFunction;
-    children[5].children[1].onchange = refreshFunction;
-    children[7].oninput = refreshFunction;
-
-    children[1].children[0].value = title;
-    children[3].value = company;
-    children[5].children[0].value = fromDate.toString();
-    children[5].children[1].value = toDate.toString();
-    children[7].value = description;
+    const titleInput = children[1].children[0];
+    titleInput.maxLength = MaxNameLength;
+    titleInput.value = DOMPurify.sanitize(work.title);
+    titleInput.oninput = refreshView;
+    
+    const companyInput = children[3];
+    companyInput.maxLength = MaxNameLength;
+    companyInput.value = DOMPurify.sanitize(work.company);
+    companyInput.oninput = refreshView;
+    
+    const fromDateInput = children[5].children[0];
+    fromDateInput.valueAsDate = work.from;
+    fromDateInput.onchange = refreshView;
+    
+    const toDateInput = children[5].children[1];
+    toDateInput.valueAsDate = work.to;
+    toDateInput.onchange = refreshView;
+    
+    const descriptionInput = children[7];
+    descriptionInput.maxLength = MaxDescriptionLength;
+    descriptionInput.value = DOMPurify.sanitize(work.description);
+    descriptionInput.oninput = refreshView;
+    
     worksDiv.append(templateClone);
 
-    const encapsulated = encapsulateInMovable(templateClone, refreshFunction);
+    const encapsulated = encapsulateInMovable(templateClone, refreshView);
     children[1].children[1].onclick = _ => {
         encapsulated.remove();
-        refreshFunction()
+        refreshView()
         refreshElementsArrows(worksDiv);
+        refreshCreateButton();
     }
 
     worksDiv.append(encapsulated);
     refreshElementsArrows(worksDiv);
+    refreshCreateButton();
 }
 
-function addEducation(title = "", date = Date.now()) {
+function addEducation(education = new Education()) {
 
-    const refreshFunction = () => frame.contentWindow.refreshEducations(systemJson.EducationTitle, extractEducations());
+    if(!Education.IsTypeEducation(education) || !languageSystem)
+        return;
+    
+    const refreshFunction = () => frame.contentWindow.refreshEducations(languageSystem.educationTitle, extractEducations());
+    const refreshCreateButton = () => addEducationButton.style.display = educationsDiv.children.length < MaxItems ? 'block' : 'none';
+    
 
     const templateClone = document.importNode(educationItemTemplate.content, true).children[0];
     const children = templateClone.children;
 
-    children[0].oninput = refreshFunction;
-    children[1].onchange = refreshFunction;
-
-    children[0].value = title;
-    children[1].value = date.toString();
+    const nameInput = children[0];
+    nameInput.maxLength = MaxNameLength;
+    nameInput.value = DOMPurify.sanitize(education.title);
+    nameInput.oninput = refreshFunction;
+    
+    const dateInput = children[1];
+    dateInput.valueAsDate = education.date;
+    dateInput.onchange = refreshFunction;
 
     const encapsulated = encapsulateInMovable(templateClone, refreshFunction);
     children[2].onclick = _ => {
         encapsulated.remove();
         refreshFunction();
         refreshElementsArrows(educationsDiv);
+        refreshCreateButton();
     }
 
     educationsDiv.append(encapsulated);
     refreshElementsArrows(educationsDiv);
+    refreshCreateButton();
 }
 
-function addLanguage(level = 0, name = "") {
-
-    const refreshFunction = () => frame.contentWindow.refreshLanguages(systemJson.LanguagesTitle, extractLanguages(), systemJson.LanguageLevels);
+function addLanguage(language = new Language()) 
+{
+    if(!Language.IsTypeLanguage(language) || !languageSystem)
+        return;
+    
+    const refreshFunction = () => frame.contentWindow.refreshLanguages(languageSystem.languagesTitle, extractLanguages(), languageSystem.languageLevels);
+    const refreshCreateButton = () => addLanguageButton.style.display = languagesDiv.children.length < MaxItems ? 'block' : 'none';
+    
 
     const templateClone = document.importNode(languageItemTemplate.content, true).children[0];
     const children = templateClone.children;
 
-    children[0].oninput = refreshFunction;
-    children[1].onchange = refreshFunction;
-
-    children[0].value = name;
-
-    systemJson.LanguageLevels.forEach(element => {
+    const nameInput = children[0];
+    nameInput.maxLength = MaxNameLength;
+    nameInput.value = DOMPurify.sanitize(language.name);
+    nameInput.oninput = refreshFunction;
+    
+    const levelSelect = children[1];
+    languageSystem.languageLevels.forEach(element => {
 
         const option = document.createElement("option");
         option.textContent = element;
-        children[1].append(option);
+        levelSelect.append(option);
     });
-
-    if (isNumeric(level) && level <= children[1].options.length)
-        children[1].selectedIndex = level;
+    if (language.level <= levelSelect.options.length)
+        levelSelect.selectedIndex = language.level;
+    levelSelect.onchange = refreshFunction;
+    
 
     const encapsulated = encapsulateInMovable(templateClone, refreshFunction);
     children[2].onclick = _ => {
         encapsulated.remove();
         refreshFunction();
         refreshElementsArrows(languagesDiv);
+        refreshCreateButton();
     }
 
     languagesDiv.append(encapsulated);
     refreshElementsArrows(languagesDiv);
+    refreshCreateButton();
 }
 
-function addProject(title = "", date = Date.now(), description = "") {
+function addProject(project = new Project()) {
 
-    const refreshFunction = () => frame.contentWindow.refreshProjects(systemJson.ProjectsTitle, extractProjects());
+    if(!Project.IsTypeProject(project) || !languageSystem)
+        return;
+    
+    const refreshFunction = () => frame.contentWindow.refreshProjects(languageSystem.projectsTitle, extractProjects());
+    const refreshCreateButton = () => addProjectButton.style.display = projectsDiv.children.length < MaxItems ? 'block' : 'none';
+    
 
     const templateClone = document.importNode(projectItemTemplate.content, true).children[0];
     const children = templateClone.children;
 
-    children[1].children[0].oninput = refreshFunction;
-    children[3].onchange = refreshFunction;
-    children[4].oninput = refreshFunction;
-
-    children[1].children[0].value = title;
-    children[3].value = date.toString();
-    children[4].value = description;
+    const nameInput = children[1].children[0];
+    nameInput.maxLength = MaxNameLength;
+    nameInput.value = DOMPurify.sanitize(project.title);
+    nameInput.oninput = refreshFunction;
+    
+    const dateInput = children[3];
+    dateInput.valueAsDate = project.date;
+    dateInput.onchange = refreshFunction;
+    
+    const descriptionInput = children[4];
+    descriptionInput.maxLength = MaxDescriptionLength;
+    descriptionInput.value = DOMPurify.sanitize(project.description);
+    descriptionInput.oninput = refreshFunction;
 
     const encapsulated = encapsulateInMovable(templateClone, refreshFunction);
     children[1].children[1].onclick = _ => {
         encapsulated.remove();
         refreshFunction();
         refreshElementsArrows(projectsDiv);
+        refreshCreateButton();
     }
 
     projectsDiv.append(encapsulated);
     refreshElementsArrows(projectsDiv);
+    refreshCreateButton();
 }
 
-function addHobby(name = "") {
+function addSkill(skill = new Skill()) {
+    
+    if(!Skill.IsTypeSkill(skill) || !languageSystem)
+        return;
+    
+    const refreshFunction = () => frame.contentWindow.refreshSkills(languageSystem.skillsTitle, extractSkills());
+    const refreshCreateButton = () => addSkillButton.style.display = skillsDiv.children.length < MaxItems ? 'block' : 'none';
+    
 
-    const refreshFunction = () => frame.contentWindow.refreshHobbies(systemJson.HobbiesTitle, extractHobbies());
+    const template = document.importNode(skillItemTemplate.content, true).children[0];
+    const children = template.children;
+
+    const nameInput = children[0];
+    nameInput.maxLength = MaxNameLength;
+    nameInput.value = DOMPurify.sanitize(skill.name);
+    nameInput.oninput = refreshFunction;
+
+    const encapsulated = encapsulateInMovable(template, refreshFunction);
+    children[1].onclick = _ => {
+        encapsulated.remove();
+        refreshFunction();
+        refreshElementsArrows(skillsDiv);
+        refreshCreateButton();
+    }
+
+    skillsDiv.append(encapsulated);
+    refreshElementsArrows(skillsDiv);
+    refreshCreateButton();
+}
+
+function addHobby(hobby = new Hobby()) {
+
+    if(!Hobby.IsTypeHobby(hobby) || !languageSystem)
+        return;
+    
+    const refreshFunction = () => frame.contentWindow.refreshHobbies(languageSystem.hobbiesTitle, extractHobbies());
+    const refreshCreateButton = () => addHobbyButton.style.display = hobbiesDiv.children.length < MaxItems ? 'block' : 'none';
 
     const templateClone = document.importNode(hobbyItemTemplate.content, true).children[0];
     const children = templateClone.children;
 
-    children[0].oninput = _ => refreshFunction();
-    children[0].value = name;
+    const nameInput = children[0];
+    nameInput.maxLength = MaxNameLength;
+    nameInput.value = DOMPurify.sanitize(hobby.name);
+    nameInput.oninput = refreshFunction;
 
     const encapsulated = encapsulateInMovable(templateClone, refreshFunction);
     children[1].onclick = _ => {
         encapsulated.remove();
         refreshFunction();
         refreshElementsArrows(hobbiesDiv);
+        refreshCreateButton();
     }
 
     hobbiesDiv.append(encapsulated);
     refreshElementsArrows(hobbiesDiv);
+    refreshCreateButton();
 }
 
 
@@ -642,7 +670,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         systemLanguageSelect.onchange = async function (event) {
             let index = 0;
             for (let i = 0; i < systemLanguageSelect.options.length; i++) {
-                if (systemLanguageSelect.options[i].value !== event.target.value) continue;
+                
+                if (systemLanguageSelect.options[i].value !== event.target.value) 
+                    continue;
+                
                 index = i;
                 break;
             }
@@ -656,26 +687,100 @@ document.addEventListener("DOMContentLoaded", async function () {
             refreshImage();
             refreshImagePreview();
         };
-        photoInput.onchange = _ => {
+        photoInput.onchange = event => {
             refreshImage();
-            refreshImagePreview();
+            
+            let image = null;
+            
+            if(event.target.files.length > 0 && event.target.files[0])
+            {
+                if(event.target.files[0].type.includes("image") === false){
+                    showMessage(message, "The selected file is not an image", MessageClass.Error);
+                    event.target.value = '';
+                    return;
+                }
+                
+                if(event.target.files[0].size > MaxFileSize){
+                    showMessage(message, "The selected file is too big", MessageClass.Error);
+                    event.target.value = '';
+                    return;
+                }
+
+                image = event.target.files[0];
+            }
+            
+            refreshImagePreview(image);
         };
-        nameInput.oninput = _ => frame.contentWindow.refreshName(extractName());
+        titleInput.maxLength = MaxNameLength;
+        titleInput.oninput = _ => frame.contentWindow.refreshTitle(extractTitle());
+        professionInput.maxLength = MaxNameLength;
         professionInput.oninput = _ => frame.contentWindow.refreshProfession(extractProfession());
-        aboutMeInput.oninput = _ => frame.contentWindow.refreshAboutMe(systemJson.AboutMeTitle, extractAboutMe());
-        document.getElementById("add-contact").onclick = _ => addContact();
-        document.getElementById("add-link").onclick = _ => addLink();
-        document.getElementById("add-skill").onclick = _ => addSkill();
-        document.getElementById("add-work").onclick = _ => addWork();
-        document.getElementById("add-education").onclick = _ => addEducation();
-        document.getElementById("add-language").onclick = _ => addLanguage();
-        document.getElementById("add-project").onclick = _ => addProject();
-        document.getElementById("add-hobby").onclick = _ => addHobby();
+        aboutMeInput.maxLength = MaxDescriptionLength;
+        aboutMeInput.oninput = _ => frame.contentWindow.refreshAboutMe(languageSystem.aboutMeTitle, extractAboutMe());
+        addContactButton.onclick = _ => addContact();
+        addLinkButton.onclick = _ => addLink();
+        addWorkButton.onclick = _ => addWork();
+        addEducationButton.onclick = _ => addEducation();
+        addProjectButton.onclick = _ => addProject();
+        addLanguageButton.onclick = _ => addLanguage();
+        addSkillButton.onclick = _ => addSkill();
+        addHobbyButton.onclick = _ => addHobby();
         removeCssButton.onclick = _ => {
             customCssInput.value = ''
             refreshCustomCss();
         };
-        customCssInput.onchange = () => refreshCustomCss();
+        customCssInput.onchange = async function(event) {
+
+            let css = "";
+            
+            if(event.target.files.length > 0 && event.target.files[0])
+            {
+                if(event.target.files[0].type.includes("css") === false){
+                    showMessage(message, "The selected file is not a css file", MessageClass.Error);
+                    event.target.value = '';
+                    return;
+                }
+
+                if(event.target.files[0].size > MaxFileSize){
+                    showMessage(message, "The selected file is too big", MessageClass.Error);
+                    event.target.value = '';
+                    return;
+                }
+
+                css = await event.target.files[0].text();
+            }
+            
+            await refreshCustomCss(css);
+        }
+        
+        removeHtmlButton.onclick = () => {
+            customHtmlInput.value = ''
+            refreshCustomHtml();
+        }
+        
+        customHtmlInput.onchange= async function(event) {
+            
+            let html = "";
+            
+            if(event.target.files.length > 0 && event.target.files[0])
+            {
+                if(event.target.files[0].type.includes("html") === false){
+                    showMessage(message, "The selected file is not a html file", MessageClass.Error);
+                    event.target.value = '';
+                    return;
+                }
+                
+                if(event.target.files[0].size > MaxFileSize){
+                    showMessage(message, "The selected file is too big", MessageClass.Error);
+                    event.target.value = '';
+                    return;
+                }
+                
+                html = await event.target.files[0].text();   
+            }
+
+            await refreshCustomHtml(html);
+        }
         
         
         document.getElementById("download_template_button").onclick = async function () {
@@ -691,18 +796,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         const saveButton = document.getElementById("save_button");
         saveButton.onclick = async function () {
             saveButton.disabled = true;
-
-            const generatedJson = await generateJson();
-            const cvId = sessionStorage.getItem(CvIdItemKey);
             
-            await SendRequest("POST", localStorage.getItem(TokenKey), null, APILink + "Cv/SetContent/",
-                new SetContentDto(cvId, generatedJson.content, null, err => showMessage(message, err, MessageClass.Error)));
-
-            await SendRequest("POST", localStorage.getItem(TokenKey), null, APILink + "Cv/SetImage/",
-                new SetContentDto(cvId, generatedJson.image), null, err => showMessage(message, err, MessageClass.Error));
-
-            await SendRequest("POST", localStorage.getItem(TokenKey), null, APILink + "Cv/SetCustomCss/",
-                new SetContentDto(cvId, generatedJson.customCss), null, err => showMessage(message, err, MessageClass.Error));
+            const cv = await generateJson();
+            cv.id = sessionStorage.getItem(CvIdItemKey);
+            await SendRequest("POST", localStorage.getItem(TokenKey), null, APILink + "Cv/Modify",
+                cv, null, err => showMessage(message, err, MessageClass.Error));
             
             saveButton.disabled = false;
         };
