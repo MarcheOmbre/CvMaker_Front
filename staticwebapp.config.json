@@ -3,7 +3,6 @@
     {
       "route": "/index.html",
       "redirect": "/",
-      "rewrite": "/",
       "statusCode": 301
     }
   ]
