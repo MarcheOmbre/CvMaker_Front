@@ -9,10 +9,10 @@
     <link rel="stylesheet" href="../Common/style.css">
     <link rel="stylesheet" href="./style.css">
     <script src="../Common/Scripts/Constants.js" type="text/javascript"></script>
-    <script src="../Common/Scripts/TypesCheckerUtility.js" type="text/javascript"></script>
-    <script src="../Common/Scripts/FilesConverter.js" type="text/javascript"></script>
+    <script src="../Common/Scripts/TypesExtension.js" type="text/javascript"></script>
     <script src="../Common/Scripts/Communication.js" type="text/javascript"></script>
-    <script type="text/javascript" src="../Common/Scripts/Utility.js"></script>
+    <script src="../Common/Scripts/Utility.js" type="text/javascript"></script>
+    <script src="../Plugins/jszip.js" type="text/javascript"></script>
     <script type="text/javascript" src="../Common/Scripts/Dtos.js"></script>
     <script type="text/javascript" src="./script.js" defer></script>
 
@@ -55,7 +55,7 @@
 
             <label for="contacts_input">Contacts:</label>
             <div id="contacts_input">
-                <div id="contacts"></div>
+                <div id="header_contacts"></div>
                 <div class="button-container">
                     <button id="add-contact">Add contact</button>
                 </div>
@@ -63,7 +63,7 @@
 
             <label for="links_input">Links:</label>
             <div id="links_input">
-                <div id="links"></div>
+                <div id="header_links"></div>
                 <div class="button-container">
                     <button id="add-link">Add links</button>
                 </div>

@@ -91,7 +91,7 @@ input, textarea {
     width: 45px;
 }
 
-#contacts, #links, #skills, #works, #educations, #languages, #projects, #hobbies {
+#header_contacts, #header_links, #skills, #works, #educations, #languages, #projects, #hobbies {
     display: flex;
     flex-direction: column;
     gap: 10px;

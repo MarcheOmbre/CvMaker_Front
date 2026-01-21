@@ -39,12 +39,10 @@ async function addCv(cv) {
         }
 
         await SendRequest("POST", localStorage.getItem(TokenKey), null,
-            APILink + "Cv/SetName", new SetNameDto(cv.id, children[0].value),
-            () => {
-            },
-            res => {
+            APILink + "Cv/SetName", new SetNameDto(cv.id, children[0].value), null,
+            reponse => {
                 children[0].value = cv.name
-                showMessage(message, res, MessageClass.Error)
+                showMessage(message, reponse, MessageEnums.Error)
             });
     }
     children[1].onclick = () => {
@@ -64,7 +62,7 @@ async function addCv(cv) {
                     if(cvsParent.children.length === 1)
                         cvFeedback.textContent = noCVContent;
                 },
-                res => showMessage(message, res, MessageClass.Error));
+                response => showMessage(message, response, MessageEnums.Error));
         }
     }
 
@@ -83,9 +81,9 @@ async function reloadCvs() {
     createButton.style.display = "none";
     
     await SendRequest("GET", localStorage.getItem(TokenKey), null, APILink + "Cv/GetAll", null,
-        async function(res)
+        async function(response)
         {
-            const cvs = JSON.parse(res);
+            const cvs = JSON.parse(response);
 
             for (const cv of cvs)
                 await addCv(cv);
@@ -93,12 +91,12 @@ async function reloadCvs() {
             cvFeedback.textContent = cvs.length === 0 ? noCVContent : "";
             createButton.style.display = cvs.length < MaxCvCount ? "block" : "none";
 
-        }, res => showMessage(message, res, MessageClass.Error));
+        }, response => showMessage(message, response, MessageEnums.Error));
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
 
-    if (!checkIsLogged()) {
+    if (!await checkIsLogged()) {
         location.assign("../index.html")
         return;
     }
@@ -118,8 +116,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                 createButton.disabled = false;
                 reloadCvs()
             },
-            res =>{
-                showMessage(message, res, MessageClass.Error);
+            response =>{
+                showMessage(message, response, MessageEnums.Error);
                 createButton.disabled = false;
             });
     };

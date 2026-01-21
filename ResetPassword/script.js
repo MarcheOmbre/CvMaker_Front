@@ -25,12 +25,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     resetButton.onclick = async _ => {
 
         if (passwordInput.value === "") {
-            showMessage(message, "Password can't be null", MessageClass.Error);
+            showMessage(message, "Password can't be null", MessageEnums.Error);
             return;
         }
 
         if (passwordConfirmationInput.value !== passwordInput.value) {
-            showMessage(message, "Passwords doesn't match", MessageClass.Error);
+            showMessage(message, "Passwords doesn't match", MessageEnums.Error);
             return;
         }
 
@@ -42,13 +42,13 @@ document.addEventListener("DOMContentLoaded", async function () {
         resetButton.disabled = true;
         
         if(isNotStringOrEmpty(passwordInput.value)){
-            showMessage(message, "Password can't be null", MessageClass.Error);
+            showMessage(message, "Password can't be null", MessageEnums.Error);
             resetButton.disabled = false;
             return;
         }
         
         if(passwordInput.value !== passwordConfirmationInput.value){
-            showMessage(message, "Passwords doesn't match", MessageClass.Error);
+            showMessage(message, "Passwords doesn't match", MessageEnums.Error);
             resetButton.disabled = false;
             return;
         }
@@ -57,13 +57,13 @@ document.addEventListener("DOMContentLoaded", async function () {
             APILink + "Authentification/ResetPassword",
             new ResetPasswordDto(passwordInput.value, passwordConfirmationInput.value),
             _ => location.assign("../index.html"),
-            res => {
+            response => {
                 resetButton.disabled = false;
 
-                if (res.status === 401)
-                    showMessage(message, "Unauthorized : the token is invalid", MessageClass.Error);
+                if (response.status === 401)
+                    showMessage(message, "Unauthorized : the token is invalid", MessageEnums.Error);
                 else
-                    showMessage(message, res, MessageClass.Error);
+                    showMessage(message, response, MessageEnums.Error);
             });
     }
 

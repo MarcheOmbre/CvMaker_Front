@@ -5,8 +5,8 @@ const photoReader = document.getElementById("photo-reader");
 const titleInput = document.getElementById("title_input");
 const professionInput = document.getElementById("profession_input");
 const aboutMeInput = document.getElementById("about-me_input");
-const contactsDiv = document.getElementById("contacts");
-const linksDiv = document.getElementById("links");
+const contactsDiv = document.getElementById("header_contacts");
+const linksDiv = document.getElementById("header_links");
 const skillsDiv = document.getElementById("skills");
 const worksDiv = document.getElementById("works");
 const educationsDiv = document.getElementById("educations");
@@ -58,10 +58,10 @@ async function importFromJson(dataJson) {
 
     // Get the system language
     let systemLanguagePath = systemLanguageSelect.value;
-    if(!isNotStringOrEmpty(dataJson.systemLanguage))
+    if (!isNotStringOrEmpty(dataJson.systemLanguage))
         systemLanguagePath = dataJson.systemLanguage;
     languageSystem = await fetch(systemLanguagePath).then(response => response.json());
-    
+
     // Fill the fields
     titleInput.value = DOMPurify.sanitize(dataJson.title);
     professionInput.value = DOMPurify.sanitize(dataJson.profession);
@@ -75,7 +75,7 @@ async function importFromJson(dataJson) {
     dataJson.skills.forEach(element => addSkill(new Skill(element)));
     dataJson.hobbies.forEach(element => addHobby(new Hobby(element)));
     if (!isNotStringOrEmpty(dataJson.image)) {
-        
+
         const sanitizedImage = DOMPurify.sanitize(dataJson.image);
         const blob = await fetch(sanitizedImage).then(response => response.blob());
         if (blob) {
@@ -86,7 +86,7 @@ async function importFromJson(dataJson) {
         }
     }
     if (!isNotStringOrEmpty(dataJson.customCss)) {
-        
+
         const sanitizedCss = DOMPurify.sanitize(dataJson.customCss);
         const blob = new Blob([sanitizedCss], {type: 'text/css'});
         if (blob) {
@@ -97,10 +97,10 @@ async function importFromJson(dataJson) {
         }
         await refreshCustomCss(sanitizedCss);
     }
-    
+
     if (!isNotStringOrEmpty(dataJson.customHtml)) {
-       
-       const sanitizedHtml = DOMPurify.sanitize(dataJson.customHtml);
+
+        const sanitizedHtml = DOMPurify.sanitize(dataJson.customHtml);
         const blob = new Blob([sanitizedHtml], {type: 'text/html'});
         if (blob) {
             const dt = new DataTransfer();
@@ -115,7 +115,7 @@ async function importFromJson(dataJson) {
 }
 
 async function generateJson() {
-    
+
     const jsonObject = {};
     jsonObject.systemLanguage = DOMPurify.sanitize(systemLanguageSelect.value);
     jsonObject.title = extractTitle();
@@ -145,34 +145,40 @@ async function generateJson() {
      * 
      */
     jsonObject.customCss = "";
-    if(customCssInput.files.length > 0 && customCssInput.files[0])
+    if (customCssInput.files.length > 0 && customCssInput.files[0])
         jsonObject.customCss = DOMPurify.sanitize(await customCssInput.files[0].text());
-    
+
     /*
      *
      * Custom HTML
      * 
      */
     jsonObject.customHtml = "";
-    if(customHtmlInput.files.length > 0 && customHtmlInput.files[0])
+    if (customHtmlInput.files.length > 0 && customHtmlInput.files[0])
         jsonObject.customHtml = DOMPurify.sanitize(await customHtmlInput.files[0].text());
     
     return jsonObject;
 }
 
 
-function extractTitle() {return DOMPurify.sanitize(titleInput.value);}
+function extractTitle() {
+    return DOMPurify.sanitize(titleInput.value);
+}
 
-function extractProfession() {return DOMPurify.sanitize(professionInput.value);}
+function extractProfession() {
+    return DOMPurify.sanitize(professionInput.value);
+}
 
-function extractAboutMe() {return DOMPurify.sanitize(aboutMeInput.value);}
+function extractAboutMe() {
+    return DOMPurify.sanitize(aboutMeInput.value);
+}
 
 function extractContacts() {
 
     const contacts = [];
     [...contactsDiv.children].forEach(element => {
         const children = element.children[1].children;
-        
+
         const data = {};
         data.type = children[0].selectedIndex;
         data.value = DOMPurify.sanitize(children[1].value);
@@ -187,7 +193,7 @@ function extractLinks() {
     const links = [];
     [...linksDiv.children].forEach(element => {
         const children = element.children[1].children;
-        
+
         const data = {};
         data.name = DOMPurify.sanitize(children[0].value);
         data.url = DOMPurify.sanitize(children[1].value);
@@ -285,10 +291,10 @@ function extractHobbies() {
 }
 
 function refreshImage(image = null) {
-    
-    photoReader.style.display = image ?  "block" : "none";
-    removePhotoButton.style.display = image ?  "block" : "none";
-    
+
+    photoReader.style.display = image ? "block" : "none";
+    removePhotoButton.style.display = image ? "block" : "none";
+
     if (image) {
 
         const fileReader = new FileReader();
@@ -301,31 +307,28 @@ function refreshImage(image = null) {
         photoReader.src = '';
 }
 
-function refreshImagePreview(image = null){
-    
-    if(image)
-    {
+function refreshImagePreview(image = null) {
+
+    if (image) {
         const fileReader = new FileReader();
         fileReader.onload = function (e) {
             frame.contentWindow.refreshImage(e.target.result);
         };
         fileReader.readAsDataURL(image);
-    }
-    else
+    } else
         frame.contentWindow.refreshImage(null);
 }
 
-async function refreshCustomCss(customCss = "") 
-{
+async function refreshCustomCss(customCss = "") {
     const hasCss = !isNotStringOrEmpty(customCss);
     removeCssButton.style.display = hasCss ? "block" : "none";
     await frame.contentWindow.refreshCss(customCss);
 }
 
-async function refreshCustomHtml(customHtml = "")  {
+async function refreshCustomHtml(customHtml = "") {
     const hasHtml = !isNotStringOrEmpty(customHtml);
     removeHtmlButton.style.display = hasHtml ? "block" : "none";
-    await frame.contentWindow.refreshCss(customHtml);
+    await refreshViewerJson();
 }
 
 function refreshElementsArrows(movableElementsParent) {
@@ -343,7 +346,7 @@ async function refreshViewerJson() {
 
 
 function encapsulateInMovable(htmlElement, refreshFunction) {
-    
+
     const template = document.importNode(encapsulationArrowTemplate.content, true).children[0];
     template.append(htmlElement);
     template.children[0].children[0].addEventListener('click', _ => {
@@ -365,10 +368,10 @@ function encapsulateInMovable(htmlElement, refreshFunction) {
 
 function addContact(contact = new Contact()) {
 
-    if(!(contact instanceof Contact) || !languageSystem)
+    if (!(contact instanceof Contact) || !languageSystem)
         return;
-    
-    
+
+
     const refreshView = () => frame.contentWindow.refreshContacts(extractContacts());
     const refreshCreateButton = () => addContactButton.style.display = contactsDiv.children.length < MaxItems ? 'block' : 'none';
 
@@ -404,12 +407,12 @@ function addContact(contact = new Contact()) {
 
 function addLink(link = new Link()) {
 
-    if(!Link.IsTypeLink(link))
+    if (!Link.IsTypeLink(link))
         return;
-    
+
     const refreshView = () => frame.contentWindow.refreshLinks(extractLinks());
     const refreshCreateButton = () => addLinkButton.style.display = linksDiv.children.length < MaxItems ? 'block' : 'none';
-    
+
 
     const template = document.importNode(linkItemTemplate.content, true).children[0];
     const children = template.children;
@@ -437,12 +440,12 @@ function addLink(link = new Link()) {
 
 function addWork(work = new Work()) {
 
-    if(!Work.IsTypeWork(work) || !languageSystem)
+    if (!Work.IsTypeWork(work) || !languageSystem)
         return;
-    
+
     const refreshView = () => frame.contentWindow.refreshWorks(languageSystem.workTitle, extractWorks());
     const refreshCreateButton = () => addWorkButton.style.display = worksDiv.children.length < MaxItems ? 'block' : 'none';
-    
+
     const templateClone = document.importNode(workItemTemplate.content, true).children[0];
     const children = templateClone.children;
 
@@ -450,25 +453,25 @@ function addWork(work = new Work()) {
     titleInput.maxLength = MaxNameLength;
     titleInput.value = DOMPurify.sanitize(work.title);
     titleInput.oninput = refreshView;
-    
+
     const companyInput = children[3];
     companyInput.maxLength = MaxNameLength;
     companyInput.value = DOMPurify.sanitize(work.company);
     companyInput.oninput = refreshView;
-    
+
     const fromDateInput = children[5].children[0];
     fromDateInput.valueAsDate = work.from;
     fromDateInput.onchange = refreshView;
-    
+
     const toDateInput = children[5].children[1];
     toDateInput.valueAsDate = work.to;
     toDateInput.onchange = refreshView;
-    
+
     const descriptionInput = children[7];
     descriptionInput.maxLength = MaxDescriptionLength;
     descriptionInput.value = DOMPurify.sanitize(work.description);
     descriptionInput.oninput = refreshView;
-    
+
     worksDiv.append(templateClone);
 
     const encapsulated = encapsulateInMovable(templateClone, refreshView);
@@ -486,12 +489,12 @@ function addWork(work = new Work()) {
 
 function addEducation(education = new Education()) {
 
-    if(!Education.IsTypeEducation(education) || !languageSystem)
+    if (!Education.IsTypeEducation(education) || !languageSystem)
         return;
-    
+
     const refreshFunction = () => frame.contentWindow.refreshEducations(languageSystem.educationTitle, extractEducations());
     const refreshCreateButton = () => addEducationButton.style.display = educationsDiv.children.length < MaxItems ? 'block' : 'none';
-    
+
 
     const templateClone = document.importNode(educationItemTemplate.content, true).children[0];
     const children = templateClone.children;
@@ -500,7 +503,7 @@ function addEducation(education = new Education()) {
     nameInput.maxLength = MaxNameLength;
     nameInput.value = DOMPurify.sanitize(education.title);
     nameInput.oninput = refreshFunction;
-    
+
     const dateInput = children[1];
     dateInput.valueAsDate = education.date;
     dateInput.onchange = refreshFunction;
@@ -518,14 +521,13 @@ function addEducation(education = new Education()) {
     refreshCreateButton();
 }
 
-function addLanguage(language = new Language()) 
-{
-    if(!Language.IsTypeLanguage(language) || !languageSystem)
+function addLanguage(language = new Language()) {
+    if (!Language.IsTypeLanguage(language) || !languageSystem)
         return;
-    
+
     const refreshFunction = () => frame.contentWindow.refreshLanguages(languageSystem.languagesTitle, extractLanguages(), languageSystem.languageLevels);
     const refreshCreateButton = () => addLanguageButton.style.display = languagesDiv.children.length < MaxItems ? 'block' : 'none';
-    
+
 
     const templateClone = document.importNode(languageItemTemplate.content, true).children[0];
     const children = templateClone.children;
@@ -534,7 +536,7 @@ function addLanguage(language = new Language())
     nameInput.maxLength = MaxNameLength;
     nameInput.value = DOMPurify.sanitize(language.name);
     nameInput.oninput = refreshFunction;
-    
+
     const levelSelect = children[1];
     languageSystem.languageLevels.forEach(element => {
 
@@ -545,7 +547,7 @@ function addLanguage(language = new Language())
     if (language.level <= levelSelect.options.length)
         levelSelect.selectedIndex = language.level;
     levelSelect.onchange = refreshFunction;
-    
+
 
     const encapsulated = encapsulateInMovable(templateClone, refreshFunction);
     children[2].onclick = _ => {
@@ -562,12 +564,12 @@ function addLanguage(language = new Language())
 
 function addProject(project = new Project()) {
 
-    if(!Project.IsTypeProject(project) || !languageSystem)
+    if (!Project.IsTypeProject(project) || !languageSystem)
         return;
-    
+
     const refreshFunction = () => frame.contentWindow.refreshProjects(languageSystem.projectsTitle, extractProjects());
     const refreshCreateButton = () => addProjectButton.style.display = projectsDiv.children.length < MaxItems ? 'block' : 'none';
-    
+
 
     const templateClone = document.importNode(projectItemTemplate.content, true).children[0];
     const children = templateClone.children;
@@ -576,11 +578,11 @@ function addProject(project = new Project()) {
     nameInput.maxLength = MaxNameLength;
     nameInput.value = DOMPurify.sanitize(project.title);
     nameInput.oninput = refreshFunction;
-    
+
     const dateInput = children[3];
     dateInput.valueAsDate = project.date;
     dateInput.onchange = refreshFunction;
-    
+
     const descriptionInput = children[4];
     descriptionInput.maxLength = MaxDescriptionLength;
     descriptionInput.value = DOMPurify.sanitize(project.description);
@@ -600,13 +602,13 @@ function addProject(project = new Project()) {
 }
 
 function addSkill(skill = new Skill()) {
-    
-    if(!Skill.IsTypeSkill(skill) || !languageSystem)
+
+    if (!Skill.IsTypeSkill(skill) || !languageSystem)
         return;
-    
+
     const refreshFunction = () => frame.contentWindow.refreshSkills(languageSystem.skillsTitle, extractSkills());
     const refreshCreateButton = () => addSkillButton.style.display = skillsDiv.children.length < MaxItems ? 'block' : 'none';
-    
+
 
     const template = document.importNode(skillItemTemplate.content, true).children[0];
     const children = template.children;
@@ -631,9 +633,9 @@ function addSkill(skill = new Skill()) {
 
 function addHobby(hobby = new Hobby()) {
 
-    if(!Hobby.IsTypeHobby(hobby) || !languageSystem)
+    if (!Hobby.IsTypeHobby(hobby) || !languageSystem)
         return;
-    
+
     const refreshFunction = () => frame.contentWindow.refreshHobbies(languageSystem.hobbiesTitle, extractHobbies());
     const refreshCreateButton = () => addHobbyButton.style.display = hobbiesDiv.children.length < MaxItems ? 'block' : 'none';
 
@@ -661,7 +663,7 @@ function addHobby(hobby = new Hobby()) {
 
 document.addEventListener("DOMContentLoaded", async function () {
 
-        if (!checkIsLogged()) {
+        if (!await checkIsLogged()) {
             location.assign("../index.html")
             return;
         }
@@ -670,10 +672,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         systemLanguageSelect.onchange = async function (event) {
             let index = 0;
             for (let i = 0; i < systemLanguageSelect.options.length; i++) {
-                
-                if (systemLanguageSelect.options[i].value !== event.target.value) 
+
+                if (systemLanguageSelect.options[i].value !== event.target.value)
                     continue;
-                
+
                 index = i;
                 break;
             }
@@ -689,26 +691,25 @@ document.addEventListener("DOMContentLoaded", async function () {
         };
         photoInput.onchange = event => {
             refreshImage();
-            
+
             let image = null;
-            
-            if(event.target.files.length > 0 && event.target.files[0])
-            {
-                if(event.target.files[0].type.includes("image") === false){
-                    showMessage(message, "The selected file is not an image", MessageClass.Error);
+
+            if (event.target.files.length > 0 && event.target.files[0]) {
+                if (event.target.files[0].type.includes("image") === false) {
+                    showMessage(message, "The selected file is not an image", MessageEnums.Error);
                     event.target.value = '';
                     return;
                 }
-                
-                if(event.target.files[0].size > MaxFileSize){
-                    showMessage(message, "The selected file is too big", MessageClass.Error);
+
+                if (event.target.files[0].size > MaxFileSize) {
+                    showMessage(message, "The selected file is too big", MessageEnums.Error);
                     event.target.value = '';
                     return;
                 }
 
                 image = event.target.files[0];
             }
-            
+
             refreshImagePreview(image);
         };
         titleInput.maxLength = MaxNameLength;
@@ -729,79 +730,90 @@ document.addEventListener("DOMContentLoaded", async function () {
             customCssInput.value = ''
             refreshCustomCss();
         };
-        customCssInput.onchange = async function(event) {
+        customCssInput.onchange = async function (event) {
 
             let css = "";
-            
-            if(event.target.files.length > 0 && event.target.files[0])
-            {
-                if(event.target.files[0].type.includes("css") === false){
-                    showMessage(message, "The selected file is not a css file", MessageClass.Error);
+
+            if (event.target.files.length > 0 && event.target.files[0]) {
+                if (event.target.files[0].type.includes("css") === false) {
+                    showMessage(message, "The selected file is not a css file", MessageEnums.Error);
                     event.target.value = '';
                     return;
                 }
 
-                if(event.target.files[0].size > MaxFileSize){
-                    showMessage(message, "The selected file is too big", MessageClass.Error);
+                if (event.target.files[0].size > MaxFileSize) {
+                    showMessage(message, "The selected file is too big", MessageEnums.Error);
                     event.target.value = '';
                     return;
                 }
 
                 css = await event.target.files[0].text();
             }
-            
+
             await refreshCustomCss(css);
         }
-        
+
         removeHtmlButton.onclick = () => {
             customHtmlInput.value = ''
             refreshCustomHtml();
         }
-        
-        customHtmlInput.onchange= async function(event) {
-            
+
+        customHtmlInput.onchange = async function (event) {
+
             let html = "";
-            
-            if(event.target.files.length > 0 && event.target.files[0])
-            {
-                if(event.target.files[0].type.includes("html") === false){
-                    showMessage(message, "The selected file is not a html file", MessageClass.Error);
+
+            if (event.target.files.length > 0 && event.target.files[0]) {
+                if (event.target.files[0].type.includes("html") === false) {
+                    showMessage(message, "The selected file is not a html file", MessageEnums.Error);
                     event.target.value = '';
                     return;
                 }
-                
-                if(event.target.files[0].size > MaxFileSize){
-                    showMessage(message, "The selected file is too big", MessageClass.Error);
+
+                if (event.target.files[0].size > MaxFileSize) {
+                    showMessage(message, "The selected file is too big", MessageEnums.Error);
                     event.target.value = '';
                     return;
                 }
-                
-                html = await event.target.files[0].text();   
+
+                html = await event.target.files[0].text();
             }
 
             await refreshCustomHtml(html);
         }
-        
-        
-        document.getElementById("download_template_button").onclick = async function () {
 
-            document.getElementById("download_template_button").onclick = _ => {
-                const templateLink = document.createElement("a");
-                templateLink.download = "template.css";
-                templateLink.href = "../Common/Template/style.css";
-                templateLink.click();
-            }
-        };
+        const downloadButton = document.getElementById("download_template_button");
+        downloadButton.onclick = async function(){
+
+            downloadButton.disabled = true;
+            
+            const zip = new JSZip();
+            zip.file("initialStructure.html", await fetch("../Common/Template/structure.html").then(response => response.text()));
+            zip.file("initialStyle.css", await fetch("../Common/Template/style.css").then(response => response.text()));
+            if(customHtmlInput.files.length > 0)
+                zip.file("customStructure.html", await customHtmlInput.files[0].text());
+            if(customCssInput.files.length > 0)
+                zip.file("customStyle.css", await customCssInput.files[0].text());
+            zip.generateAsync({type: "blob"})
+                .then(function (content) {
+                    const templateLink = document.createElement("a");
+                    templateLink.download = "template.zip";
+                    templateLink.href = URL.createObjectURL(content);
+                    templateLink.click();
+                    downloadButton.disabled = false;
+                });
+
+   
+        }
 
         const saveButton = document.getElementById("save_button");
         saveButton.onclick = async function () {
             saveButton.disabled = true;
-            
+
             const cv = await generateJson();
             cv.id = sessionStorage.getItem(CvIdItemKey);
             await SendRequest("POST", localStorage.getItem(TokenKey), null, APILink + "Cv/Modify",
-                cv, null, err => showMessage(message, err, MessageClass.Error));
-            
+                cv, null, response => showMessage(message, response, MessageEnums.Error));
+
             saveButton.disabled = false;
         };
 
@@ -813,11 +825,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         // Hide the page during loading
         document.body.style.display = "none";
 
-        await SendRequest("GET", localStorage.getItem(TokenKey), parameters, APILink + `Cv/Get`, null, async function (res) {
-
-            const file = JSON.parse(res);
-            await importFromJson(file);
-            await refreshViewerJson();
-        }, res => showMessage(message, res, MessageClass.Error));
+        await SendRequest("GET", localStorage.getItem(TokenKey), parameters, APILink + `Cv/Get`, null,
+            async function (response) {
+                const file = JSON.parse(response);
+                await importFromJson(file);
+                await refreshViewerJson();
+            }, res => showMessage(message, res, MessageEnums.Error));
     }
 )

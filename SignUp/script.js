@@ -8,7 +8,7 @@ const message = document.getElementById("message");
 class RegisterDto {
     constructor(email, password) {
         
-        if(!isMatchingMailPattern(email))
+        if(!isEmailEntry(email))
             throw new Error("Invalid email pattern");
         
         if(!isString(password))
@@ -28,7 +28,7 @@ class RegisterDto {
 
 document.addEventListener("DOMContentLoaded", async function () {
 
-    if(checkIsLogged())
+    if(await checkIsLogged())
     {
         location.assign("./Listing/index.html")
         return;
@@ -40,19 +40,19 @@ document.addEventListener("DOMContentLoaded", async function () {
     
     signupButton.onclick = async _ => {
         
-        if(!isMatchingMailPattern(emailInput.value))
+        if(!isEmailEntry(emailInput.value))
         {
-            showMessage(message, "email pattern incorrect", MessageClass.Error);
+            showMessage(message, "email pattern incorrect", MessageEnums.Error);
             return;
         }
 
         if(passwordInput.value === ""){
-            showMessage(message, "Password can't be null", MessageClass.Error);
+            showMessage(message, "Password can't be null", MessageEnums.Error);
             return;
         }
         
         if(passwordConfirmationInput.value !== passwordInput.value){
-            showMessage(message, "Passwords doesn't match", MessageClass.Error);
+            showMessage(message, "Passwords doesn't match", MessageEnums.Error);
             return;
         }
 
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             APILink + "Authentification/Register",
             new RegisterDto(emailInput.value, passwordInput.value, passwordConfirmationInput.value),
             _ => location.assign("../index.html"),
-            res => showMessage(message, res, MessageClass.Error));
+            response => showMessage(message, response, MessageEnums.Error));
     }
 
 })

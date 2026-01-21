@@ -5,58 +5,57 @@ const message = document.getElementById("message");
 
 class LoginDto {
     constructor(email, password) {
-        
-        if(!isMatchingMailPattern(email))
+
+        if (!isEmailEntry(email))
             throw new Error("Invalid email pattern");
-        
-        if(!isString(password))
+
+        if (!isString(password))
             throw new Error("Password must be a string");
-        
-        if(password === "")
+
+        if (password === "")
             throw new Error("Password can't be null");
-        
+
         this.email = email;
         this.password = password;
     }
 }
 
-document.addEventListener("DOMContentLoaded", async function () 
-{
-    if(checkIsLogged())
-    {
+document.addEventListener("DOMContentLoaded", async function () {
+    if (await checkIsLogged()) {
         location.assign("./Listing/index.html")
         return;
     }
 
     emailInput.maxLength = MaxEmailLength;
     passwordInput.maxLength = MaxPasswordLength;
-    
+
     loginButton.onclick = async _ => {
-        
-        if(!isMatchingMailPattern(emailInput.value))
-        {
-            showMessage(message, "email pattern incorrect", MessageClass.Error);
+
+        if (!isEmailEntry(emailInput.value)) {
+            showMessage(message, "email pattern incorrect", MessageEnums.Error);
             return;
         }
 
         if (passwordInput.value === "") {
-            showMessage(message, "Password can't be null", MessageClass.Error);
+            showMessage(message, "Password can't be null", MessageEnums.Error);
             return;
         }
 
         loginButton.disabled = true;
+        
 
         await SendRequest("POST", null, null,
             APILink + "Authentification/Log",
             new LoginDto(emailInput.value, passwordInput.value),
-            res => {
-                window.localStorage.setItem(TokenKey, res);
+            response => {
+                window.localStorage.setItem(TokenKey, response);
                 location.assign("./Listing/index.html")
             },
             response => {
-                showMessage(message, response, MessageClass.Error);
+                showMessage(message, response, MessageEnums.Error);
                 loginButton.disabled = false;
             });
+
     }
 
 })

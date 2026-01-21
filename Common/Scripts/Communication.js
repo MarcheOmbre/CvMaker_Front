@@ -1,14 +1,3 @@
-class KeyPairValue{
-    constructor(key, value) {
-        
-        if(!isString(key))
-            throw new Error("Key must be a string");
-        
-        this.key = key;
-        this.value = value;
-    }
-}
-
 async function SendRequest(type, tokenToInject, parameters, link, data, onSucceed, onFailed){
     
     if(type !== "GET" && type !== "POST" && type !== "PUT" && type !== "DELETE")

@@ -1,54 +1,48 @@
 ﻿const printButton = document.getElementById("print_button");
 const markdownToHtmlConverter = new showdown.Converter();
-
-
-const nameEntry = document.getElementById("header_name");
-const professionEntry = document.getElementById("header_profession");
-const imageEntry = document.getElementById("header_photo");
-const aboutMeSection = document.getElementById("about-me");
-const contactsSection = document.getElementById("header_contacts_list");
-const linksSection = document.getElementById("header_links_list");
-const skillsSection = document.getElementById("skills");
-const worksSection = document.getElementById("work");
-const educationSection = document.getElementById("education");
-const languagesSection = document.getElementById("languages");
-const projectsSection = document.getElementById("projects");
-const hobbiesSection = document.getElementById("hobbies");
-
-const contactItemTemplate = document.getElementById("contact-item_template");
-const linkItemTemplate = document.getElementById("link-item_template");
-const aboutMeTemplate = document.getElementById("about-me_template");
-const skillItemTemplate = document.getElementById("skill-item_template");
-const workItemTemplate = document.getElementById("work-item_template");
-const educationItemTemplate = document.getElementById("education-item_template");
-const languageItemTemplate = document.getElementById("language-item_template");
-const projectItemTemplate = document.getElementById("project-item_template");
-const hobbyItemTemplate = document.getElementById("hobby-item_template");
+const styleContainer = document.getElementById("template_style");
+const structureContainer = document.getElementById("template_structure");
+const template = new Template();
 
 
 function fillSection(section, title, fillSection) {
     if (!section)
         return;
 
-    section.getElementsByClassName("title-parent")[0].getElementsByClassName("title")[0].textContent = title;
-    fillSection(section.getElementsByClassName("content")[0]);
+    section.querySelector(sectionTitleClassKey).textContent = title;
+    fillSection(section.querySelector(sectionContentClassKey));
 }
 
+async function refreshHtml(html) 
+{
+    async function loadDefaultStructure()
+    {
+        const html = await fetch("../Common/Template/structure.html").then(response => response.text());
+        const loadReferencesFeedback = template.tryImport(html, structureContainer);
+        if(!loadReferencesFeedback.success)
+            throw new Error("Internal error : Failed to load the default structure : " + loadReferencesFeedback.message);
+    }
 
-async function refreshCss(css) {
-    
+    if(!isNotStringOrEmpty(html))
+    {
+        structureContainer.innerHTML = DOMPurify.sanitize(html);
+        const loadReferencesFeedback = template.tryImport(html, structureContainer);
+        if(!loadReferencesFeedback.success){
+            alert("The custom structure template failed to load.\nThe default template is loaded instead.\n\n" + loadReferencesFeedback.message)
+            await loadDefaultStructure();
+        }
+    }
+    else
+        await loadDefaultStructure();
+}
+
+async function refreshCss(css) 
+{
     let cssContent = DOMPurify.sanitize(css);
     if(isNotStringOrEmpty(cssContent))
         cssContent = await fetch("../Common/Template/style.css").then(response => response.text());
-
-    const lastCss = document.getElementById("css");
-    if(lastCss)
-        lastCss.remove();
     
-    const style = document.createElement('style');
-    style.id = "css";
-    style.textContent = cssContent;
-    document.head.append(style);
+    styleContainer.textContent = cssContent;
 }
 
 function refreshSystemLanguage(language) {
@@ -57,16 +51,19 @@ function refreshSystemLanguage(language) {
 }
 
 function refreshTitle(title) {
-    if (isString(title))
-        nameEntry.innerHTML = DOMPurify.sanitize(title);
+    if (isString(title)){
+        template.get(titleIdKey).innerHTML = DOMPurify.sanitize(title);   
+    }
 }
 
 function refreshProfession(profession) {
     if (isString(profession))
-        professionEntry.innerHTML = DOMPurify.sanitize(profession);
+        template.get(professionIdKey).innerHTML = DOMPurify.sanitize(profession);
 }
 
 function refreshImage(image) {
+    
+    const imageEntry = template.get(imageIdKey);
     if (isString(image))
         imageEntry.src = DOMPurify.sanitize(image);
     
@@ -78,14 +75,16 @@ function refreshContacts(contacts) {
     if (!contacts || !Array.isArray(contacts))
         return;
 
+    const contactsSection = template.get(contactsSectionIdKey);
     contactsSection.innerHTML = "";
 
+    const contactItemTemplate = template.get(contactTemplateIdKey);
     contacts.forEach(element => {
 
         if(!Contact.IsTypeContact(element))
             return;
 
-        const templateClone = document.importNode(contactItemTemplate.content, true).children[0];
+        const templateClone = document.importNode(contactItemTemplate.content, true);
         templateClone.innerHTML = DOMPurify.sanitize(element.value);
         contactsSection.appendChild(templateClone);
     });
@@ -96,19 +95,21 @@ function refreshLinks(links) {
     if (!links || !Array.isArray(links))
         return;
 
+    const linksSection = template.get(linksSectionIdKey);
     linksSection.innerHTML = "";
 
+    const linkItemTemplate = template.get(linkTemplateIdKey);
     links.forEach(element => {
 
         if(!Link.IsTypeLink(element))
             return;
-
-        const templateClone = document.importNode(linkItemTemplate.content, true).children[0];
-        const children = templateClone.children;
-        children[0].innerHTML = DOMPurify.sanitize(element.name);
+        
+        const templateClone = document.importNode(linkItemTemplate.content, true);
+        templateClone.querySelector(linkTemplateNameClassKey).innerHTML = DOMPurify.sanitize(element.name);
         const link = DOMPurify.sanitize(element.url);
-        children[1].href = link;
-        children[1].textContent = link;
+        const linkUrlElement = templateClone.querySelector(linkTemplateUrlClassKey);
+        linkUrlElement.href = link;
+        linkUrlElement.textContent = link;
         linksSection.appendChild(templateClone);
     });
 }
@@ -118,13 +119,8 @@ function refreshAboutMe(title, text) {
     if (!isString(title))
         return;
     
-    fillSection(aboutMeSection, title, content => {
-
-        content.innerHTML = "";
-        
-        const templateClone = document.importNode(aboutMeTemplate.content, true).children[0];
-        templateClone.innerHTML = DOMPurify.sanitize(markdownToHtmlConverter.makeHtml(text));
-        content.appendChild(templateClone);
+    fillSection(template.get(aboutMeSectionIdKey), title, content => {
+        content.innerHTML = DOMPurify.sanitize(markdownToHtmlConverter.makeHtml(text));
     });
 }
 
@@ -133,8 +129,10 @@ function refreshWorks(title, works) {
     if (!isString(title) || !works || !Array.isArray(works))
         return;
 
+    const worksSection = template.get(worksSectionIdKey);
     worksSection.children[1].innerHTML = "";
 
+    const workItemTemplate = template.get(workTemplateIdKey);
     this.fillSection(worksSection, title, content => {
         works.forEach(element => {
 
@@ -159,12 +157,11 @@ function refreshWorks(title, works) {
                 stringDate += `${month}/${element.to.getFullYear()}`;
             }
 
-            const templateClone = document.importNode(workItemTemplate.content, true).children[0];
-            const children = templateClone.children;
-            children[0].children[0].innerHTML = DOMPurify.sanitize(element.title);
-            children[0].children[1].innerHTML = DOMPurify.sanitize(element.company);
-            children[0].children[2].textContent = stringDate;
-            children[1].innerHTML = DOMPurify.sanitize(markdownToHtmlConverter.makeHtml(element.description));
+            const templateClone = document.importNode(workItemTemplate.content, true);
+            templateClone.querySelector(workTemplateTitleClassKey).innerHTML = DOMPurify.sanitize(element.title);
+            templateClone.querySelector(workTemplateCompanyClassKey).innerHTML = DOMPurify.sanitize(element.company);
+            templateClone.querySelector(workTemplateDateClassKey).textContent = stringDate;
+            templateClone.querySelector(workTemplateDescriptionClassKey).innerHTML = DOMPurify.sanitize(markdownToHtmlConverter.makeHtml(element.description));
 
             content.appendChild(templateClone);
         })
@@ -176,18 +173,19 @@ function refreshEducations(title, educations) {
     if (!isString(title) || !educations || !Array.isArray(educations))
         return;
 
+    const educationSection = template.get(educationSectionIdKey);
     educationSection.children[1].innerHTML = "";
     
+    const educationItemTemplate = template.get(educationTemplateIdKey);
     fillSection(educationSection, title, content => {
         educations.forEach(element => {
 
             if(!Education.IsTypeEducation(element))
                 return;
 
-            const templateClone = document.importNode(educationItemTemplate.content, true).children[0];
-            const children = templateClone.children;
-            children[0].innerHTML = DOMPurify.sanitize(element.title);
-            children[1].textContent = element.date.getFullYear();
+            const templateClone = document.importNode(educationItemTemplate.content, true);
+            templateClone.querySelector(educationTemplateNameClassKey).innerHTML = DOMPurify.sanitize(element.title);
+            templateClone.querySelector(educationTemplateDateClassKey).textContent = element.date.getFullYear();
 
             content.appendChild(templateClone);
         })
@@ -199,14 +197,17 @@ function refreshLanguages(title, languages, languageLevels) {
     if (!isString(title) || !languages || !Array.isArray(languages) || !languageLevels || !Array.isArray(languageLevels))
         return;
 
+    const languagesSection = template.get(languagesSectionIdKey);
     languagesSection.children[1].innerHTML = "";
+    
+    const languageItemTemplate = template.get(languageTemplateIdKey);
     fillSection(languagesSection, title, content => {
         languages.forEach(element => {
             
             if(!Language.IsTypeLanguage(element))
                 return;
 
-            const templateClone = document.importNode(languageItemTemplate.content, true).children[0];
+            const templateClone = document.importNode(languageItemTemplate.content, true);
             templateClone.innerHTML = DOMPurify.sanitize(`${element.name} (${languageLevels[element.level]})`);
 
             content.appendChild(templateClone);
@@ -220,19 +221,20 @@ function refreshProjects(title, projects) {
     if (!isString(title) || !projects || !Array.isArray(projects))
         return;
 
+    const projectsSection = template.get(projectsSectionIdKey);
     projectsSection.children[1].innerHTML = "";
     
+    const projectItemTemplate = template.get(projectTemplateIdKey);
     fillSection(projectsSection, title, content => {
         projects.forEach(element => {
 
              if(!Project.IsTypeProject(element))
                 return;
 
-            const templateClone = document.importNode(projectItemTemplate.content, true).children[0];
-            const children = templateClone.children;
-            children[0].children[0].innerHTML = DOMPurify.sanitize(element.title);
-            children[0].children[1].textContent = element.date.getFullYear();
-            children[1].innerHTML = DOMPurify.sanitize(markdownToHtmlConverter.makeHtml(element.description));
+            const templateClone = document.importNode(projectItemTemplate.content, true);
+            templateClone.querySelector(projectTemplateTitleClassKey).innerHTML = DOMPurify.sanitize(element.title);
+            templateClone.querySelector(projectTemplateDateClassKey).textContent = element.date.getFullYear();
+            templateClone.querySelector(projectTemplateDescriptionClassKey).innerHTML = DOMPurify.sanitize(markdownToHtmlConverter.makeHtml(element.description));
             
             content.appendChild(templateClone);
         })
@@ -244,15 +246,17 @@ function refreshSkills(title, skills) {
     if (!isString(title) || !skills || !Array.isArray(skills))
         return;
 
+    const skillsSection = template.get(skillsSectionIdKey);
     skillsSection.children[1].innerHTML = "";
 
+    const skillItemTemplate = template.get(skillTemplateIdKey);
     fillSection(skillsSection, title, content =>
         skills.forEach(element => {
 
             if(!Skill.IsTypeSkill(element))
                 return;
 
-            const templateClone = document.importNode(skillItemTemplate.content, true).children[0];
+            const templateClone = document.importNode(skillItemTemplate.content, true);
             templateClone.innerHTML = DOMPurify.sanitize(element.name);
             content.appendChild(templateClone);
         }));
@@ -264,15 +268,17 @@ function refreshHobbies(title, hobbies) {
     if (!isString(title) || !hobbies || !Array.isArray(hobbies))
         return;
 
+    const hobbiesSection = template.get(hobbiesSectionIdKey);
     hobbiesSection.children[1].innerHTML = "";
     
+    const hobbyItemTemplate = template.get(hobbyTemplateIdKey);
     fillSection(hobbiesSection, title, content => {
         hobbies.forEach(element => {
 
             if(!Hobby.IsTypeHobby(element))
                 return;
 
-            const templateClone = document.importNode(hobbyItemTemplate.content, true).children[0];
+            const templateClone = document.importNode(hobbyItemTemplate.content, true);
             templateClone.innerHTML = DOMPurify.sanitize(element.name);
             content.appendChild(templateClone);
         })
@@ -285,13 +291,17 @@ async function refreshFromJson(dataJson) {
     if (!dataJson)
         return
 
+    document.title = dataJson.name;
+    
     const systemLanguage = await fetch(dataJson.systemLanguage).then(response => response.json());
-
+    await refreshHtml(dataJson.customHtml);
+    await refreshCss(dataJson.customCss);
+    
     refreshSystemLanguage(systemLanguage.key);
     refreshTitle(dataJson.title);
-    refreshAboutMe(systemLanguage.aboutMeTitle, dataJson.aboutMe);
     refreshProfession(dataJson.profession);
     refreshImage(dataJson.image);
+    refreshAboutMe(systemLanguage.aboutMeTitle, dataJson.aboutMe);
     refreshContacts(dataJson.contacts);
     refreshLinks(dataJson.links);
     refreshSkills(systemLanguage.skillsTitle, dataJson.skills);
@@ -300,8 +310,6 @@ async function refreshFromJson(dataJson) {
     refreshLanguages(systemLanguage.languagesTitle, dataJson.languages, systemLanguage.languageLevels);
     refreshProjects(systemLanguage.projectsTitle, dataJson.projects);
     refreshHobbies(systemLanguage.hobbiesTitle, dataJson.hobbies);
-
-    await refreshCss(dataJson.customCss);
 }
 
 document.addEventListener("DOMContentLoaded", () => {

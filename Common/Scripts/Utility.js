@@ -1,3 +1,9 @@
+const MessageEnums = {
+    Error: "error-message",
+    Success: "success-message",
+    Info: "info-message"
+}
+
 function showMessage(element, message, type) {
     
     if (element === null)
@@ -12,14 +18,22 @@ function showMessage(element, message, type) {
     }, 3000);
 }
 
-function isMatchingMailPattern(str){
-    return str.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
-}
-
-function checkIsLogged(){
-    return localStorage.getItem(TokenKey) !== null;
-}
-
-function isNotStringOrEmpty(str){
-    return !isString(str) || str.trim() === "";
+async function checkIsLogged()
+{
+    // If no token
+    const token = localStorage.getItem(TokenKey);
+    if(token == null)
+        return false;
+    
+    // Try to refresh the token
+    let succeed;
+    await SendRequest("GET", token, null,
+        APILink + "Authentification/RefreshToken", null,
+        response => {
+            window.localStorage.setItem(TokenKey, response);
+            succeed = true;
+        },
+        () => succeed = false);
+    
+    return succeed;
 }

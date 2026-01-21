@@ -5,7 +5,7 @@ const message = document.getElementById("message");
 class RetrievePasswordDto {
     constructor(email, pagePathInput) 
     {
-        if(!isMatchingMailPattern(email))
+        if(!isEmailEntry(email))
             throw new Error("Invalid email pattern");
         
         if(!isString(pagePathInput))
@@ -26,8 +26,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Link buttons
     retrieveButton.onclick = async function() {
 
-        if (!isMatchingMailPattern(emailInput.value)) {
-            showMessage(message, "email pattern incorrect", MessageClass.Error);
+        if (!isEmailEntry(emailInput.value)) {
+            showMessage(message, "email pattern incorrect", MessageEnums.Error);
             return;
         }
 
@@ -37,11 +37,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             APILink + "Authentification/ForgotPassword",
             new RetrievePasswordDto(emailInput.value, "https://green-moss-02220040f.1.azurestaticapps.net/ResetPassword/index.html"),
             _ => {
-                showMessage(message, "Email sent", MessageClass.Info);
+                showMessage(message, "Email sent", MessageEnums.Info);
                 retrieveButton.disabled = false;
-            }, res => {
+            }, response => {
                 retrieveButton.disabled = false;
-                showMessage(message, res, MessageClass.Error);
+                showMessage(message, response, MessageEnums.Error);
             }
         )
     }
