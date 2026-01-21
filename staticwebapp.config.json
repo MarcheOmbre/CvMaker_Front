@@ -2,6 +2,13 @@
   "routes": [
     {
       "route": "/index.html",
+      "methods": [
+        "get",
+        "head",
+        "post",
+        "put",
+        "delete"
+      ],
       "redirect": "/",
       "statusCode": 301
     }
