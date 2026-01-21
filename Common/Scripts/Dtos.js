@@ -129,11 +129,13 @@ class Skill {
     constructor(obj = {}) {
 
         obj.name ??= "";
+        obj.level ??= 0;
          
-        if(!isString(obj.name))
+        if(!isString(obj.name) || !isNumeric(obj.level))
             throw new Error("Type mismatch");
-
+        
         this.name = obj.name;
+        this.level = obj.level;
     }
     
     static IsTypeSkill(obj) {

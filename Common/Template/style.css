@@ -145,6 +145,10 @@ section .content ul, ul.content{
     list-style: none;
 }
 
+.contact-item .type{
+    display: none;
+}
+
 #header_links{
     display: flex;
     flex-direction: row;
@@ -168,6 +172,23 @@ section .content ul, ul.content{
 
 .link-item a{
     color: black;
+}
+
+#skills ul, #languages ul, #hobbies ul{
+    padding-left: 0;
+    list-style: none;
+}
+
+.skill-item{
+    display: grid;
+    grid-template-columns: 150px 100px;
+    gap: 5px;
+}
+
+.language-item{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
 }
 
 /* 

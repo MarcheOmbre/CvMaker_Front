@@ -10,33 +10,40 @@ const languagesSectionIdKey = "#languages";
 const projectsSectionIdKey = "#projects";
 const skillsSectionIdKey = "#skills";
 const hobbiesSectionIdKey = "#hobbies";
-const contactTemplateIdKey = "#contact-item_template";
+const contactTemplateNameKey = "contact-item_template";
 const contactTemplateChildKey = ".contact-item";
-const linkTemplateIdKey = "#link-item_template";
+const contactTemplateTypeClassKey = ".type";
+const contactTemplateValueClassKey = ".value";
+const linkTemplateNameKey = "link-item_template";
 const linkTemplateChildClassKey = ".link-item";
 const linkTemplateNameClassKey = ".name";
 const linkTemplateUrlClassKey = ".url";
-const workTemplateIdKey = "#work-item_template";
+const workTemplateNameKey = "work-item_template";
 const workTemplateChildClassKey = ".work-item";
 const workTemplateTitleClassKey = ".title";
 const workTemplateCompanyClassKey = ".company";
 const workTemplateDateClassKey = ".date";
 const workTemplateDescriptionClassKey = ".description";
-const educationTemplateIdKey = "#education-item_template";
+const educationTemplateNameKey = "education-item_template";
 const educationTemplateChildClassKey = ".education-item";
 const educationTemplateNameClassKey = ".name";
 const educationTemplateDateClassKey = ".date";
-const languageTemplateIdKey = "#language-item_template";
+const languageTemplateNameKey = "language-item_template";
 const languageTemplateChildClassKey = ".language-item";
-const projectTemplateIdKey = "#project-item_template";
+const languageTemplateNameClassKey = ".name";
+const languageTemplateLevelClassKey = ".level";
+const projectTemplateNameKey = "project-item_template";
 const projectTemplateChildClassKey = ".project-item";
 const projectTemplateTitleClassKey = ".title";
 const projectTemplateDateClassKey = ".date";
 const projectTemplateDescriptionClassKey = ".description";
-const skillTemplateIdKey = "#skill-item_template";
+const skillTemplateNameKey = "skill-item_template";
 const skillTemplateChildClassKey = ".skill-item";
-const hobbyTemplateIdKey = "#hobby-item_template";
+const skillTemplateNameClassKey = ".name";
+const skillTemplateLevelClassKey = ".level";
+const hobbyTemplateNameKey = "hobby-item_template";
 const hobbyTemplateChildClassKey = ".hobby-item";
+const hobbyTemplateNameClassKey = ".name";
 const sectionTitleClassKey = ".title";
 const sectionContentClassKey = ".content";
 
@@ -60,6 +67,7 @@ class Template {
             template = document.createElement("template");
             template.id = id;
             container.append(template);
+            this.#elementsCache.set(id, template);
         }
 
         return template;
@@ -128,15 +136,17 @@ class Template {
          */
         
         // Contacts
-        const contactTemplate = this.#getOrCreateTemplate(contactTemplateIdKey, container);
+        const contactTemplate = this.#getOrCreateTemplate(contactTemplateNameKey, container);
         const contactItem = container.querySelector(contactTemplateChildKey);
-        if(contactItem !== null)
+        if(contactItem !== null && 
+            contactItem.querySelector(contactTemplateTypeClassKey) !== null && 
+            contactItem.querySelector(contactTemplateValueClassKey) !== null)
             contactTemplate.content.append(contactItem);
         else 
             brokenElements.add(contactTemplateChildKey);
 
         // Links
-        const linkTemplate = this.#getOrCreateTemplate(linkTemplateIdKey, container);
+        const linkTemplate = this.#getOrCreateTemplate(linkTemplateNameKey, container);
         const linkItem = container.querySelector(linkTemplateChildClassKey);
         if(linkItem !== null && 
             linkItem.querySelector(linkTemplateNameClassKey) !== null && 
@@ -146,7 +156,7 @@ class Template {
             brokenElements.add(linkTemplateChildClassKey);
         
         // Works
-        const workTemplate = this.#getOrCreateTemplate(workTemplateIdKey, container);
+        const workTemplate = this.#getOrCreateTemplate(workTemplateNameKey, container);
         const workItem = container.querySelector(workTemplateChildClassKey);
         if (workItem !== null &&
             workItem.querySelector(workTemplateTitleClassKey) !== null &&
@@ -158,7 +168,7 @@ class Template {
             brokenElements.add(workTemplateChildClassKey);
         
         // Educations
-        const educationTemplate = this.#getOrCreateTemplate(educationTemplateIdKey, container);
+        const educationTemplate = this.#getOrCreateTemplate(educationTemplateNameKey, container);
         const educationItem = container.querySelector(educationTemplateChildClassKey);
         if (educationItem !== null &&
             educationItem.querySelector(educationTemplateNameClassKey) !== null &&
@@ -167,15 +177,17 @@ class Template {
         else brokenElements.add(educationTemplateChildClassKey);
         
         // Languages
-        const languageTemplate = this.#getOrCreateTemplate(languageTemplateIdKey, container);
+        const languageTemplate = this.#getOrCreateTemplate(languageTemplateNameKey, container);
         const languageItem = container.querySelector(languageTemplateChildClassKey);
-        if (languageItem !== null)
+        if (languageItem !== null &&
+            languageItem.querySelector(languageTemplateNameClassKey) !== null &&
+            languageItem.querySelector(languageTemplateLevelClassKey) !== null)
             languageTemplate.content.append(languageItem);       
         else 
             brokenElements.add(languageTemplateChildClassKey);
         
         // Projects
-        const projectTemplate = this.#getOrCreateTemplate(projectTemplateIdKey, container);
+        const projectTemplate = this.#getOrCreateTemplate(projectTemplateNameKey, container);
         const projectItem = container.querySelector(projectTemplateChildClassKey);
         if (projectItem !== null &&
         projectItem.querySelector(projectTemplateTitleClassKey) !== null &&
@@ -185,17 +197,20 @@ class Template {
         else brokenElements.add(projectTemplateChildClassKey);
         
         // Skills
-        const skillTemplate = this.#getOrCreateTemplate(skillTemplateIdKey, container);
+        const skillTemplate = this.#getOrCreateTemplate(skillTemplateNameKey, container);
         const skillItem = container.querySelector(skillTemplateChildClassKey);
-        if (skillItem !== null)
+        if (skillItem !== null &&
+            skillItem.querySelector(skillTemplateNameClassKey) !== null &&
+            skillItem.querySelector(skillTemplateLevelClassKey) !== null)
             skillTemplate.content.append(skillItem);
         else 
             brokenElements.add(skillTemplateChildClassKey);
         
         // Hobbies
-        const hobbyTemplate = this.#getOrCreateTemplate(hobbyTemplateIdKey, container);
+        const hobbyTemplate = this.#getOrCreateTemplate(hobbyTemplateNameKey, container);
         const hobbyItem = container.querySelector(hobbyTemplateChildClassKey);
-        if (hobbyItem !== null)
+        if (hobbyItem !== null &&
+            hobbyItem.querySelector(hobbyTemplateNameClassKey) !== null)
             hobbyTemplate.content.append(hobbyItem);
         else brokenElements.add(hobbyTemplateChildClassKey);
 
@@ -214,7 +229,7 @@ class Template {
         return new FunctionFeedback
         (
             brokenElements.size === 0, 
-            brokenElements.size > 0 ? [...brokenElements].join("\n -> ") : null
+            brokenElements.size > 0 ? " -> " + [...brokenElements].join("\n -> ") : null
         );
     }
     

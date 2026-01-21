@@ -7,11 +7,11 @@ const professionInput = document.getElementById("profession_input");
 const aboutMeInput = document.getElementById("about-me_input");
 const contactsDiv = document.getElementById("header_contacts");
 const linksDiv = document.getElementById("header_links");
-const skillsDiv = document.getElementById("skills");
 const worksDiv = document.getElementById("works");
 const educationsDiv = document.getElementById("educations");
 const languagesDiv = document.getElementById("languages");
 const projectsDiv = document.getElementById("projects");
+const skillsDiv = document.getElementById("skills");
 const hobbiesDiv = document.getElementById("hobbies");
 const removeCssButton = document.getElementById("css-remove_button");
 const customCssInput = document.getElementById("custom-css_input");
@@ -39,7 +39,7 @@ const languageItemTemplate = document.getElementById("language-item_template");
 const projectItemTemplate = document.getElementById("project-item_template");
 const hobbyItemTemplate = document.getElementById("hobby-item_template");
 
-let languageSystem;
+let systemLanguage;
 
 
 async function importFromJson(dataJson) {
@@ -60,7 +60,7 @@ async function importFromJson(dataJson) {
     let systemLanguagePath = systemLanguageSelect.value;
     if (!isNotStringOrEmpty(dataJson.systemLanguage))
         systemLanguagePath = dataJson.systemLanguage;
-    languageSystem = await fetch(systemLanguagePath).then(response => response.json());
+    systemLanguage = await fetch(systemLanguagePath).then(response => response.json());
 
     // Fill the fields
     titleInput.value = DOMPurify.sanitize(dataJson.title);
@@ -94,8 +94,8 @@ async function importFromJson(dataJson) {
 
             dt.items.add(new File([blob], 'customCss.css'));
             customCssInput.files = dt.files;
+            await refreshCustomCss(sanitizedCss);
         }
-        await refreshCustomCss(sanitizedCss);
     }
 
     if (!isNotStringOrEmpty(dataJson.customHtml)) {
@@ -107,8 +107,8 @@ async function importFromJson(dataJson) {
 
             dt.items.add(new File([blob], 'customHtml.html'));
             customHtmlInput.files = dt.files;
+            await refreshCustomHtml(sanitizedHtml);
         }
-        await refreshCustomHtml(sanitizedHtml);
     }
 
     document.body.style.display = "block";
@@ -270,7 +270,8 @@ function extractSkills() {
     [...skillsDiv.children].forEach(element => {
 
         const data = {};
-        data.name = DOMPurify.sanitize(element.children[1].children[0].value);
+        data.level = element.children[1].children[0].value;
+        data.name = DOMPurify.sanitize(element.children[1].children[1].value);
         skills.push(data);
     })
 
@@ -315,7 +316,8 @@ function refreshImagePreview(image = null) {
             frame.contentWindow.refreshImage(e.target.result);
         };
         fileReader.readAsDataURL(image);
-    } else
+    } 
+    else
         frame.contentWindow.refreshImage(null);
 }
 
@@ -368,11 +370,11 @@ function encapsulateInMovable(htmlElement, refreshFunction) {
 
 function addContact(contact = new Contact()) {
 
-    if (!(contact instanceof Contact) || !languageSystem)
+    if (!(contact instanceof Contact) || !systemLanguage)
         return;
 
 
-    const refreshView = () => frame.contentWindow.refreshContacts(extractContacts());
+    const refreshView = () => frame.contentWindow.refreshContacts(extractContacts(), systemLanguage.contactTypes);
     const refreshCreateButton = () => addContactButton.style.display = contactsDiv.children.length < MaxItems ? 'block' : 'none';
 
     const template = document.importNode(contactItemTemplate.content, true).children[0];
@@ -382,7 +384,7 @@ function addContact(contact = new Contact()) {
     children[1].maxLength = MaxEmailLength;
     children[1].oninput = refreshView;
 
-    languageSystem.contactTypes.forEach(element => {
+    systemLanguage.contactTypes.forEach(element => {
         const option = document.createElement("option");
         option.textContent = element;
         children[0].append(option);
@@ -440,10 +442,10 @@ function addLink(link = new Link()) {
 
 function addWork(work = new Work()) {
 
-    if (!Work.IsTypeWork(work) || !languageSystem)
+    if (!Work.IsTypeWork(work) || !systemLanguage)
         return;
 
-    const refreshView = () => frame.contentWindow.refreshWorks(languageSystem.workTitle, extractWorks());
+    const refreshView = () => frame.contentWindow.refreshWorks(systemLanguage.workTitle, extractWorks());
     const refreshCreateButton = () => addWorkButton.style.display = worksDiv.children.length < MaxItems ? 'block' : 'none';
 
     const templateClone = document.importNode(workItemTemplate.content, true).children[0];
@@ -489,10 +491,10 @@ function addWork(work = new Work()) {
 
 function addEducation(education = new Education()) {
 
-    if (!Education.IsTypeEducation(education) || !languageSystem)
+    if (!Education.IsTypeEducation(education) || !systemLanguage)
         return;
 
-    const refreshFunction = () => frame.contentWindow.refreshEducations(languageSystem.educationTitle, extractEducations());
+    const refreshFunction = () => frame.contentWindow.refreshEducations(systemLanguage.educationTitle, extractEducations());
     const refreshCreateButton = () => addEducationButton.style.display = educationsDiv.children.length < MaxItems ? 'block' : 'none';
 
 
@@ -522,10 +524,10 @@ function addEducation(education = new Education()) {
 }
 
 function addLanguage(language = new Language()) {
-    if (!Language.IsTypeLanguage(language) || !languageSystem)
+    if (!Language.IsTypeLanguage(language) || !systemLanguage)
         return;
 
-    const refreshFunction = () => frame.contentWindow.refreshLanguages(languageSystem.languagesTitle, extractLanguages(), languageSystem.languageLevels);
+    const refreshFunction = () => frame.contentWindow.refreshLanguages(systemLanguage.languagesTitle, extractLanguages(), systemLanguage.languageLevels);
     const refreshCreateButton = () => addLanguageButton.style.display = languagesDiv.children.length < MaxItems ? 'block' : 'none';
 
 
@@ -538,7 +540,7 @@ function addLanguage(language = new Language()) {
     nameInput.oninput = refreshFunction;
 
     const levelSelect = children[1];
-    languageSystem.languageLevels.forEach(element => {
+    systemLanguage.languageLevels.forEach(element => {
 
         const option = document.createElement("option");
         option.textContent = element;
@@ -564,10 +566,10 @@ function addLanguage(language = new Language()) {
 
 function addProject(project = new Project()) {
 
-    if (!Project.IsTypeProject(project) || !languageSystem)
+    if (!Project.IsTypeProject(project) || !systemLanguage)
         return;
 
-    const refreshFunction = () => frame.contentWindow.refreshProjects(languageSystem.projectsTitle, extractProjects());
+    const refreshFunction = () => frame.contentWindow.refreshProjects(systemLanguage.projectsTitle, extractProjects());
     const refreshCreateButton = () => addProjectButton.style.display = projectsDiv.children.length < MaxItems ? 'block' : 'none';
 
 
@@ -603,23 +605,30 @@ function addProject(project = new Project()) {
 
 function addSkill(skill = new Skill()) {
 
-    if (!Skill.IsTypeSkill(skill) || !languageSystem)
+    if (!Skill.IsTypeSkill(skill) || !systemLanguage)
         return;
 
-    const refreshFunction = () => frame.contentWindow.refreshSkills(languageSystem.skillsTitle, extractSkills());
+    const refreshFunction = () => frame.contentWindow.refreshSkills(systemLanguage.skillsTitle, extractSkills());
     const refreshCreateButton = () => addSkillButton.style.display = skillsDiv.children.length < MaxItems ? 'block' : 'none';
 
 
     const template = document.importNode(skillItemTemplate.content, true).children[0];
     const children = template.children;
 
-    const nameInput = children[0];
+    const levelInput = children[0];
+    levelInput.min = 0;
+    levelInput.max = SkillMaxLevel;
+    levelInput.placeholder = "/10";
+    levelInput.value = skill.level;
+    levelInput.oninput = refreshFunction;
+    
+    const nameInput = children[1];
     nameInput.maxLength = MaxNameLength;
     nameInput.value = DOMPurify.sanitize(skill.name);
     nameInput.oninput = refreshFunction;
 
     const encapsulated = encapsulateInMovable(template, refreshFunction);
-    children[1].onclick = _ => {
+    children[2].onclick = _ => {
         encapsulated.remove();
         refreshFunction();
         refreshElementsArrows(skillsDiv);
@@ -633,10 +642,10 @@ function addSkill(skill = new Skill()) {
 
 function addHobby(hobby = new Hobby()) {
 
-    if (!Hobby.IsTypeHobby(hobby) || !languageSystem)
+    if (!Hobby.IsTypeHobby(hobby) || !systemLanguage)
         return;
 
-    const refreshFunction = () => frame.contentWindow.refreshHobbies(languageSystem.hobbiesTitle, extractHobbies());
+    const refreshFunction = () => frame.contentWindow.refreshHobbies(systemLanguage.hobbiesTitle, extractHobbies());
     const refreshCreateButton = () => addHobbyButton.style.display = hobbiesDiv.children.length < MaxItems ? 'block' : 'none';
 
     const templateClone = document.importNode(hobbyItemTemplate.content, true).children[0];
@@ -689,9 +698,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             refreshImage();
             refreshImagePreview();
         };
-        photoInput.onchange = event => {
-            refreshImage();
-
+        photoInput.onchange = async function(event){
+            
             let image = null;
 
             if (event.target.files.length > 0 && event.target.files[0]) {
@@ -710,6 +718,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 image = event.target.files[0];
             }
 
+            refreshImage(image);
             refreshImagePreview(image);
         };
         titleInput.maxLength = MaxNameLength;
@@ -717,7 +726,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         professionInput.maxLength = MaxNameLength;
         professionInput.oninput = _ => frame.contentWindow.refreshProfession(extractProfession());
         aboutMeInput.maxLength = MaxDescriptionLength;
-        aboutMeInput.oninput = _ => frame.contentWindow.refreshAboutMe(languageSystem.aboutMeTitle, extractAboutMe());
+        aboutMeInput.oninput = _ => frame.contentWindow.refreshAboutMe(systemLanguage.aboutMeTitle, extractAboutMe());
         addContactButton.onclick = _ => addContact();
         addLinkButton.onclick = _ => addLink();
         addWorkButton.onclick = _ => addWork();

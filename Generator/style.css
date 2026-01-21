@@ -19,10 +19,6 @@
     padding: 0;
 }
 
-input, textarea {
-    min-width: 100px;
-}
-
 #editor{
     display: flex;
     width: 50vw;
@@ -118,12 +114,20 @@ input, textarea {
     grid-gap: 10px;
 }
 
-.skill-item, .hobby-item{
+.skill-item{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 50px auto 45px;
+    grid-gap: 10px;
+}
+
+.hobby-item{
     width: 100%;
     display: grid;
     grid-template-columns: auto 45px;
     grid-gap: 10px;
 }
+
 
 .work-item .title-content_div, .project-item .title-content_div{
     display: grid;

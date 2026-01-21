@@ -1,3 +1,18 @@
+:root{
+    --theme-color-button: #424874;
+    --theme-color-text-light: white;
+}
+
+.rounded_button{
+    background-color: var(--theme-color-button);
+    border: none;
+    color: var(--theme-color-text-light);
+    padding: 10px;
+    width: 45px;
+    height: 45px;
+    border-radius: 90px;
+}
+
 #print_button{
     position: fixed;
     bottom: 10px;

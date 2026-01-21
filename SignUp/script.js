@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             APILink + "Authentification/Register",
             new RegisterDto(emailInput.value, passwordInput.value, passwordConfirmationInput.value),
             _ => location.assign("../index.html"),
-            response => showMessage(message, response, MessageEnums.Error));
+            res => showMessage(message, res, MessageEnums.Error));
     }
 
 })

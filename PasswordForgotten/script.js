@@ -39,9 +39,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             _ => {
                 showMessage(message, "Email sent", MessageEnums.Info);
                 retrieveButton.disabled = false;
-            }, response => {
+            }, res => {
                 retrieveButton.disabled = false;
-                showMessage(message, response, MessageEnums.Error);
+                showMessage(message, res, MessageEnums.Error);
             }
         )
     }
