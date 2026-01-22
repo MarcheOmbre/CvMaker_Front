@@ -672,10 +672,8 @@ function addHobby(hobby = new Hobby()) {
 
 document.addEventListener("DOMContentLoaded", async function () {
 
-        if (!await checkIsLogged()) {
-            location.assign("../")
+        if (!await checkIsLogged())
             return;
-        }
 
         document.getElementById("back_button").onclick = _ => location.assign("../Listing/index.html");
         systemLanguageSelect.onchange = async function (event) {

@@ -9,13 +9,13 @@
   "responseOverrides": {
     "401": {
       "statusCode": 301,
-      "redirect": "/login"
+      "redirect": "https://green-moss-02220040f.1.azurestaticapps.net/login"
     },
     "403": {
-      "rewrite": "/404"
+      "rewrite": "https://green-moss-02220040f.1.azurestaticapps.net/404"
     },
     "404": {
-      "rewrite": "/404"
+      "rewrite": "https://green-moss-02220040f.1.azurestaticapps.net/404"
     }
   }
 }
