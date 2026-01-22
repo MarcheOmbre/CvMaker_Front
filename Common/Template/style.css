@@ -3,6 +3,10 @@
 * General 
 *
 */
+:root{
+    --main-color: #d9ebff;
+}
+
 *{
     padding: 0;
     margin: 0;
@@ -55,6 +59,22 @@ h4 {
     margin-bottom: 5px;
 }
 
+/* Progress bar: */
+progress {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-radius: 90px;
+    background-color: white;
+    color: var(--main-color);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+progress::-webkit-progress-bar { background-color: white; }
+progress::-webkit-progress-value{ background-color: var(--main-color); }
+progress::-moz-progress-bar{ background-color: var(--main-color); }
+
 /* 
 *
 * Sections 
@@ -78,7 +98,7 @@ li, p, .education-item h4{
 }
 
 section .title-parent{
-    background-color: #ecf3ff;
+    background-color: var(--main-color);
     padding-top: 3px;
     padding-bottom: 3px;
     display: inline-block;
@@ -167,7 +187,7 @@ section .content ul, ul.content{
     justify-content: center;
     gap: 5px;
     padding: 2px;
-    background-color: #ecf3ff;
+    background-color: var(--main-color);
 }
 
 .link-item a{
