@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         await SendRequest("POST", null, null,
             APILink + "Authentification/ForgotPassword",
-            new RetrievePasswordDto(emailInput.value, APILink + "ResetPassword"),
+            new RetrievePasswordDto(emailInput.value, window.location.protocol + "//" + window.location.host + "/ResetPassword/"),
             _ => {
                 showMessage(message, "Email sent", MessageEnums.Info);
                 retrieveButton.disabled = false;
