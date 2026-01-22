@@ -4,6 +4,7 @@
     --theme-color-button: #424874;
     --theme-color-button-hover: #525984;
     --theme-color-button-disabled: #999999;
+    --theme-color-button-borders: #A6B1E1;
     --theme-color-area: #ede8ff;
     --theme-color-text-dark: black;
     --theme-color-text-light: white;
@@ -105,7 +106,7 @@ svg{
     height: auto;
     padding: 40px 50px;
     border-radius: 20px;
-    border: 2px solid #A6B1E1;
+    border: 2px solid var(--theme-color-button-borders);
 }
 
 .input-logo_container{

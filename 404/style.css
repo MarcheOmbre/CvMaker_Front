@@ -1,3 +1,16 @@
+:root {
+    --theme-color-background-dark: #DCD6F7;
+    --theme-color-background-light: #F4EEFF;
+    --theme-color-button: #424874;
+    --theme-color-button-hover: #525984;
+    --theme-color-button-borders: #A6B1E1;
+    --theme-color-text-light: white;
+}
+
+html{
+    background-color: var(--theme-color-background-dark);
+}
+
 body{
     display: flex;
     flex-direction: column;
@@ -5,6 +18,15 @@ body{
     justify-content: center;
     height: 100vh;
 }
+
+.window{
+    background-color: var(--theme-color-background-light);
+    height: auto;
+    padding: 40px 50px;
+    border-radius: 20px;
+    border: 2px solid var(--theme-color-button-borders);
+}
+
 
 h1{
     padding: 0;
@@ -20,4 +42,18 @@ h1{
 a{
     text-decoration: none;
     color: var(--theme-color-text-light)
+}
+
+button{
+    background-color: var(--theme-color-button);
+    border: none;
+    color: var(--theme-color-text-light);
+    padding: 10px;
+    min-width: 100px;
+    max-width: 150px;
+    height: 40px;
+}
+
+button:hover{
+    background-color: var(--theme-color-button-hover);
 }
