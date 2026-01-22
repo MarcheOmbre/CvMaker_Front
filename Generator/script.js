@@ -808,8 +808,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                     templateLink.click();
                     downloadButton.disabled = false;
                 });
-
-   
         }
 
         const saveButton = document.getElementById("save_button");
