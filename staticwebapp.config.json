@@ -5,5 +5,17 @@
       "redirect": "/",
       "statusCode": 301
     }
-  ]
+  ],
+  "responseOverrides": {
+    "401": {
+      "statusCode": 301,
+      "redirect": "/login"
+    },
+    "403": {
+      "rewrite": "/404"
+    },
+    "404": {
+      "rewrite": "/404"
+    }
+  }
 }

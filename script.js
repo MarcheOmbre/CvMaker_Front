@@ -22,7 +22,7 @@ class LoginDto {
 
 document.addEventListener("DOMContentLoaded", async function () {
     if (await checkIsLogged()) {
-        location.assign("./Listing/index.html")
+        location.assign("./Listing/")
         return;
     }
 
@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             new LoginDto(emailInput.value, passwordInput.value),
             response => {
                 window.localStorage.setItem(TokenKey, response);
-                location.assign("./Listing/index.html")
+                location.assign("./Listing/")
             },
             response => {
                 showMessage(message, response, MessageEnums.Error);

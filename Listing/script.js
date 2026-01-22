@@ -47,7 +47,7 @@ async function addCv(cv) {
     }
     children[1].onclick = () => {
         sessionStorage.setItem(CvIdItemKey, cv.id);
-        location.assign("../Generator/index.html");
+        location.assign("../Generator/");
     }
     children[2].onclick = async function() {
         if (confirm("Are you sure you want to delete this CV?")) {
@@ -97,7 +97,7 @@ async function reloadCvs() {
 document.addEventListener("DOMContentLoaded", async function () {
 
     if (!await checkIsLogged()) {
-        location.assign("../index.html")
+        location.assign("../")
         return;
     }
 

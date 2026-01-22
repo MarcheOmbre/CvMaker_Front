@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         await SendRequest("POST", null, null,
             APILink + "Authentification/ForgotPassword",
-            new RetrievePasswordDto(emailInput.value, "https://green-moss-02220040f.1.azurestaticapps.net/ResetPassword/index.html"),
+            new RetrievePasswordDto(emailInput.value, APILink + "ResetPassword/"),
             _ => {
                 showMessage(message, "Email sent", MessageEnums.Info);
                 retrieveButton.disabled = false;

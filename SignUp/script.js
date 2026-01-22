@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     if(await checkIsLogged())
     {
-        location.assign("./Listing/index.html")
+        location.assign("./Listing/")
         return;
     }
     
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         await SendRequest("POST", null, null,
             APILink + "Authentification/Register",
             new RegisterDto(emailInput.value, passwordInput.value, passwordConfirmationInput.value),
-            _ => location.assign("../index.html"),
+            _ => location.assign("../"),
             res => showMessage(message, res, MessageEnums.Error));
     }
 
