@@ -8,7 +8,7 @@
   "languageLevels": [
     "Débutant",
     "Intermédiaire",
-    "Technique et conversationnel",
+    "Professionnel",
     "Avancé",
     "Natif"
   ],
@@ -17,6 +17,6 @@
   "workTitle": "Expériences professionnelles",
   "educationTitle": "Éducation",
   "languagesTitle": "Langues",
-  "projectsTitle": "Projects",
+  "projectsTitle": "Projets",
   "hobbiesTitle": "Centres d'intérêt"
 }

@@ -54,7 +54,7 @@ class Work {
         this.title = obj.title;
         this.company = obj.company;
         this.from = obj.from;
-        this.to = obj.from;
+        this.to = obj.to;
         this.description = obj.description;
     }
     

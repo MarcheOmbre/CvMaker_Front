@@ -140,7 +140,7 @@ section .content ul, ul.content{
 *
 */
 #header{
-    min-height: 100px;
+    min-height: 150px;
 }
 
 #header_contacts{
