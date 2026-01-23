@@ -7,7 +7,6 @@ const templateHandler = new Template();
 const sectionTitleParentClassKey = ".title-parent";
 const hiddenClassName = "hidden";
 const previewPaddingClassName = "preview-no-print";
-const imagePaddingClassName = "image-no-print";
 
 
 function fillSection(section, title, fillSection) {
@@ -334,7 +333,6 @@ function SetPrint(boolean) {
 
     printButton.classList.toggle(hiddenClassName, boolean);
     structureContainer?.classList.toggle(previewPaddingClassName, !boolean);
-    templateHandler?.get(imageIdKey).classList.toggle(imagePaddingClassName, !boolean);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
