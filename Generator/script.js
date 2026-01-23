@@ -62,6 +62,7 @@ async function importFromJson(dataJson) {
     if (!isNullOrEmptyString(dataJson.systemLanguage))
         systemLanguagePath = dataJson.systemLanguage;
     languageSystem = await fetch(systemLanguagePath).then(response => response.json());
+    await refreshSystemLanguage(systemLanguagePath);
 
     // Fill the fields
     nameInput.value = DOMPurify.sanitize(dataJson.name);
@@ -368,6 +369,29 @@ function encapsulateInMovable(htmlElement, refreshFunction) {
     return template;
 }
 
+async function refreshSystemLanguage(value, force = false) {
+    
+    if(isNullOrEmptyString(value)) 
+        return;
+    
+    let index = 0;
+    for (let i = 0; i < systemLanguageSelect.options.length; i++) {
+
+        if (systemLanguageSelect.options[i].value !== value)
+            continue;
+
+        index = i;
+        break;
+    }
+    
+    if(!force && index === systemLanguageSelect.selectedIndex)
+        return;
+    
+    systemLanguageSelect.selectedIndex = index;
+
+    await importFromJson(await generateJson());
+    await refreshViewerJson();
+}
 
 function addContact(contact = new Contact()) {
 
@@ -676,21 +700,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (!await checkIsLogged())
             return;
 
-        systemLanguageSelect.onchange = async function (event) {
-            let index = 0;
-            for (let i = 0; i < systemLanguageSelect.options.length; i++) {
-
-                if (systemLanguageSelect.options[i].value !== event.target.value)
-                    continue;
-
-                index = i;
-                break;
-            }
-            systemLanguageSelect.selectedIndex = index;
-
-            await importFromJson(await generateJson());
-            await refreshViewerJson();
-        };
+        systemLanguageSelect.onchange = async function (event) { await refreshSystemLanguage(event.target.value, true) };
         removePhotoButton.onclick = _ => {
             photoInput.value = '';
             refreshImage();
