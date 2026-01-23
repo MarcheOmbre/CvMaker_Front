@@ -26,7 +26,7 @@ async function refreshHtml(html) {
             throw new Error("Internal error : Failed to load the default structure :\n" + loadReferencesFeedback.message);
     }
 
-    if (!isStringNullOrEmpty(html)) {
+    if (!isNullOrEmptyString(html)) {
         structureContainer.innerHTML = DOMPurify.sanitize(html);
         const loadReferencesFeedback = templateHandler.tryImport(html, structureContainer);
         if (!loadReferencesFeedback.success) {
@@ -41,14 +41,14 @@ async function refreshHtml(html) {
 
 async function refreshCss(css) {
     let cssContent = DOMPurify.sanitize(css);
-    if (isStringNullOrEmpty(cssContent))
+    if (isNullOrEmptyString(cssContent))
         cssContent = await fetch("../Common/Template/style.css").then(response => response.text());
 
     styleContainer.textContent = cssContent;
 }
 
 function refreshSystemLanguage(language) {
-    if (!isStringNullOrEmpty(language))
+    if (!isNullOrEmptyString(language))
         document.documentElement.lang = DOMPurify.sanitize(language);
 }
 

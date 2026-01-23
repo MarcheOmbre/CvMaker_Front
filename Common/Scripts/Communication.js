@@ -3,7 +3,7 @@ async function SendRequest(type, tokenToInject, parameters, link, data, onSuccee
     if (type !== "GET" && type !== "POST" && type !== "PUT" && type !== "DELETE")
         throw new Error("Invalid request type");
 
-    if (isStringNullOrEmpty(link))
+    if (isNullOrEmptyString(link))
         throw new Error("Link must be a string")
 
     // Inject parameters if there are any

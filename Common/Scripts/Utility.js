@@ -4,20 +4,19 @@ const MessageEnums = {
 
 function showMessage(element, message, type) {
     
-    if (!element || !message || !type ||
-        isStringNullOrEmpty(message) || !type) 
+    if (!element || !type || isNullOrEmptyString(type))
         throw new Error("Parameters mismatch");
+    
+    if(isNullOrEmptyString(message) && type === MessageEnums.Error)
+        message = "An unknown error occured";
 
     element.className = type;
     element.style.display = "block";
     element.textContent = message;
-    
-    if(type === MessageEnums.Error)
-        element.style.color = "red";
-    else if(type === MessageEnums.Success)
-        element.style.color = "green";
-    else
-        element.style.color = "black";
+
+    element.classList.toggle(".error-message", type === MessageEnums.Error);
+    element.classList.toggle(".success-message", type === MessageEnums.Success);
+    element.classList.toggle(".info-message", type === MessageEnums.Info);
 
     setTimeout(() => {
         element.style.display = "none"

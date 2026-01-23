@@ -6,7 +6,7 @@ const message = document.getElementById("message");
 class ResetPasswordDto {
     constructor(password, passwordConfirmation) {
 
-        if (isStringNullOrEmpty(password))
+        if (isNullOrEmptyString(password))
             throw new Error("Password must be a string");
 
         if (password !== passwordConfirmation)
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     resetButton.onclick = async _ => {
 
-        if (isStringNullOrEmpty(passwordInput.value)) {
+        if (isNullOrEmptyString(passwordInput.value)) {
             showMessage(message, "Password can't be null", MessageEnums.Error);
             return;
         }

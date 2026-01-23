@@ -159,7 +159,7 @@ section .content ul, ul.content {
     float: right;
     width: 100px;
     height: 100px;
-    border-radius: 50%;
+    border-radius: 90px;
     position: absolute;
     top: 0;
     right: 0;

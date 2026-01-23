@@ -11,7 +11,7 @@ class RegisterDto {
         if (!isEmailEntry(email))
             throw new Error("Invalid email pattern");
 
-        if (isStringNullOrEmpty(password))
+        if (isNullOrEmptyString(password))
             throw new Error("Password must be a string");
 
         if (passwordConfirmationInput.value !== passwordInput.value)
@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             return;
         }
         
-        if (isStringNullOrEmpty(passwordInput.value)) {
+        if (isNullOrEmptyString(passwordInput.value)) {
             showMessage(message, "Password can't be null", MessageEnums.Error);
             return;
         }

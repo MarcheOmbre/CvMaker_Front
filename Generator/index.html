@@ -28,8 +28,10 @@
     <div id="editor">
 
         <h2>Settings</h2>
-
+        
         <div class="grid content">
+            <label for="name_input">Name:</label>
+            <input type="text" id="name_input" placeholder="Name" aria-label="Name"/>
             <label for="system-language">System language:</label>
             <select id="system-language">
                 <option value="../Common/Languages/en.json">English</option>
@@ -166,15 +168,13 @@
     <div class="movable_element">
         <div class="arrows_div">
             <button class="top-arrow squared-button">
-                <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                     height="24" fill="none" viewBox="0 0 24 24">
+                <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M12 6v13m0-13 4 4m-4-4-4 4"/>
                 </svg>
             </button>
             <button class="bottom-arrow squared-button">
-                <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                     height="24" fill="none" viewBox="0 0 24 24">
+                <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M12 19V5m0 14-4-4m4 4 4-4"/>
                 </svg>
@@ -189,7 +189,7 @@
         <input type="text" placeholder="contact" aria-label="contact"/>
         <button class="squared-button">
             <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                 width="24" height="24" fill="none" viewBox="0 0 24 24">
+                 fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
                       d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
             </svg>
@@ -203,7 +203,7 @@
         <input type="text" placeholder="link" aria-label="link"/>
         <button class="squared-button">
             <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                 width="24" height="24" fill="none" viewBox="0 0 24 24">
+                 fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
                       d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
             </svg>
@@ -218,7 +218,7 @@
             <input type="text" name="work-title_input" placeholder="title" aria-label="title"/>
             <button class="squared-button">
                 <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                     width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
                           d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
                 </svg>
@@ -242,7 +242,7 @@
         <input type="date" placeholder="date" aria-label="date"/>
         <button class="squared-button">
             <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                 width="24" height="24" fill="none" viewBox="0 0 24 24">
+                 fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
                       d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
             </svg>
@@ -256,7 +256,7 @@
         <select></select>
         <button class="squared-button">
             <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                 width="24" height="24" fill="none" viewBox="0 0 24 24">
+                 fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
                       d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
             </svg>
@@ -271,7 +271,7 @@
             <input type="text" placeholder="title" aria-label="title"/>
             <button class="squared-button">
                 <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                     width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
                           d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
                 </svg>
@@ -289,7 +289,7 @@
         <input type="text" placeholder="skill" aria-label="skill"/>
         <button class="squared-button">
             <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                 width="24" height="24" fill="none" viewBox="0 0 24 24">
+                 fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
                       d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
             </svg>
@@ -302,7 +302,7 @@
         <input type="text" placeholder="hobby" aria-label="hobby"/>
         <button class="squared-button">
             <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                 width="24" height="24" fill="none" viewBox="0 0 24 24">
+                 fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
                       d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
             </svg>
