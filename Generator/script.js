@@ -674,8 +674,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         if (!await checkIsLogged())
             return;
-
-        document.getElementById("back_button").onclick = _ => location.assign("../Listing/");
+        
         systemLanguageSelect.onchange = async function (event) {
             let index = 0;
             for (let i = 0; i < systemLanguageSelect.options.length; i++) {

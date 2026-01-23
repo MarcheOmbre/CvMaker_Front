@@ -3,6 +3,9 @@ const markdownToHtmlConverter = new showdown.Converter({simpleLineBreaks: true})
 const styleContainer = document.getElementById("template_style");
 const structureContainer = document.getElementById("template_structure");
 const templateHandler = new Template();
+const previewPaddingClassName = "preview-no-print";
+const imagePaddingClassName = "image-no-print";
+const printButtonDisplay = printButton.style.display;
 
 
 function fillSection(section, title, fillSection) {
@@ -34,6 +37,8 @@ async function refreshHtml(html)
     }
     else
         await loadDefaultStructure();
+
+    SetNoPrint();
 }
 
 async function refreshCss(css) 
@@ -320,11 +325,23 @@ async function refreshFromJson(dataJson) {
     refreshHobbies(systemLanguage.hobbiesTitle, dataJson.hobbies);
 }
 
+function SetNoPrint(){
+    printButton.style.display = printButtonDisplay;
+    structureContainer?.classList.add(previewPaddingClassName);
+    templateHandler?.get(imageIdKey).classList.add(imagePaddingClassName);
+}
+
+function SetPrint(){
+    printButton.style.display = "none";
+    structureContainer?.classList.remove(previewPaddingClassName);
+    templateHandler?.get(imageIdKey).classList.remove(imagePaddingClassName);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("print_button").onclick = _ => {
-        const buttonDisplay = printButton.style.display;
-        printButton.style.display = "none";
+    
+    printButton.onclick = _ => {
+        SetPrint();
         this.print();
-        printButton.style.display = buttonDisplay;
+        SetNoPrint();
     }
 });

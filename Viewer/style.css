@@ -3,7 +3,18 @@
     --theme-color-text-light: white;
 }
 
-.rounded_button{
+.preview-no-print{
+    padding: 16mm;
+}
+
+.image-no-print{
+    margin-top: 16mm;
+    margin-right: 16mm;
+}
+
+
+
+.squared-button{
     background-color: var(--theme-color-button);
     border: none;
     color: var(--theme-color-text-light);
