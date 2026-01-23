@@ -7,11 +7,8 @@ class RetrievePasswordDto {
         if (!isEmailEntry(email))
             throw new Error("Invalid email pattern");
 
-        if (!isString(pagePathInput))
+        if (isStringNullOrEmpty(pagePathInput))
             throw new Error("Page path must be a string");
-
-        if (pagePathInput.trim() === "")
-            throw new Error("Page path can't be empty");
 
         this.email = email;
         this.pagePath = pagePathInput;

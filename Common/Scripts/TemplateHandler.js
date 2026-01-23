@@ -56,12 +56,12 @@ class Template {
         if (!isString(id))
             throw new Error("Invalid arguments");
 
-        if (!(container instanceof HTMLElement))
+        if (!isValidHtmlElement(container))
             throw new Error("Invalid container");
 
         let template = this.#elementsCache.get(id);
 
-        if (template == null) {
+        if (!template) {
             template = document.createElement("template");
             template.id = id;
             container.append(template);
@@ -72,12 +72,12 @@ class Template {
     }
 
     #checkSection(section) {
-        return !(section === null || section.querySelector(sectionTitleClassKey) == null ||
-            section.querySelector(sectionContentClassKey) == null);
+        return (section && section.querySelector(sectionTitleClassKey) &&
+            section.querySelector(sectionContentClassKey));
     }
 
     tryImport(html, container) {
-        if (!(container instanceof HTMLElement))
+        if (!isValidHtmlElement(container))
             throw new Error("Invalid container");
 
         container.innerHTML = html;
@@ -134,9 +134,9 @@ class Template {
         // Contacts
         const contactTemplate = this.#getOrCreateTemplate(contactTemplateNameKey, container);
         const contactItem = container.querySelector(contactTemplateChildKey);
-        if (contactItem !== null &&
-            contactItem.querySelector(contactTemplateTypeClassKey) !== null &&
-            contactItem.querySelector(contactTemplateValueClassKey) !== null)
+        if (contactItem &&
+            contactItem.querySelector(contactTemplateTypeClassKey) &&
+            contactItem.querySelector(contactTemplateValueClassKey))
             contactTemplate.content.append(contactItem);
         else
             brokenElements.add(contactTemplateChildKey);
@@ -144,9 +144,9 @@ class Template {
         // Links
         const linkTemplate = this.#getOrCreateTemplate(linkTemplateNameKey, container);
         const linkItem = container.querySelector(linkTemplateChildClassKey);
-        if (linkItem !== null &&
-            linkItem.querySelector(linkTemplateNameClassKey) !== null &&
-            linkItem.querySelector(linkTemplateUrlClassKey) !== null)
+        if (linkItem &&
+            linkItem.querySelector(linkTemplateNameClassKey) &&
+            linkItem.querySelector(linkTemplateUrlClassKey))
             linkTemplate.content.append(linkItem);
         else
             brokenElements.add(linkTemplateChildClassKey);
@@ -154,11 +154,11 @@ class Template {
         // Works
         const workTemplate = this.#getOrCreateTemplate(workTemplateNameKey, container);
         const workItem = container.querySelector(workTemplateChildClassKey);
-        if (workItem !== null &&
-            workItem.querySelector(workTemplateTitleClassKey) !== null &&
-            workItem.querySelector(workTemplateCompanyClassKey) !== null &&
-            workItem.querySelector(workTemplateDateClassKey) !== null &&
-            workItem.querySelector(workTemplateDescriptionClassKey) !== null)
+        if (workItem &&
+            workItem.querySelector(workTemplateTitleClassKey) &&
+            workItem.querySelector(workTemplateCompanyClassKey) &&
+            workItem.querySelector(workTemplateDateClassKey) &&
+            workItem.querySelector(workTemplateDescriptionClassKey))
             workTemplate.content.append(workItem);
         else
             brokenElements.add(workTemplateChildClassKey);
@@ -166,18 +166,18 @@ class Template {
         // Educations
         const educationTemplate = this.#getOrCreateTemplate(educationTemplateNameKey, container);
         const educationItem = container.querySelector(educationTemplateChildClassKey);
-        if (educationItem !== null &&
-            educationItem.querySelector(educationTemplateNameClassKey) !== null &&
-            educationItem.querySelector(educationTemplateDateClassKey) !== null)
+        if (educationItem &&
+            educationItem.querySelector(educationTemplateNameClassKey) &&
+            educationItem.querySelector(educationTemplateDateClassKey))
             educationTemplate.content.append(educationItem);
         else brokenElements.add(educationTemplateChildClassKey);
 
         // Languages
         const languageTemplate = this.#getOrCreateTemplate(languageTemplateNameKey, container);
         const languageItem = container.querySelector(languageTemplateChildClassKey);
-        if (languageItem !== null &&
-            languageItem.querySelector(languageTemplateNameClassKey) !== null &&
-            languageItem.querySelector(languageTemplateLevelClassKey) !== null)
+        if (languageItem &&
+            languageItem.querySelector(languageTemplateNameClassKey) &&
+            languageItem.querySelector(languageTemplateLevelClassKey))
             languageTemplate.content.append(languageItem);
         else
             brokenElements.add(languageTemplateChildClassKey);
@@ -185,19 +185,19 @@ class Template {
         // Projects
         const projectTemplate = this.#getOrCreateTemplate(projectTemplateNameKey, container);
         const projectItem = container.querySelector(projectTemplateChildClassKey);
-        if (projectItem !== null &&
-            projectItem.querySelector(projectTemplateTitleClassKey) !== null &&
-            projectItem.querySelector(projectTemplateDateClassKey) !== null &&
-            projectItem.querySelector(projectTemplateDescriptionClassKey) !== null)
+        if (projectItem &&
+            projectItem.querySelector(projectTemplateTitleClassKey) &&
+            projectItem.querySelector(projectTemplateDateClassKey)  &&
+            projectItem.querySelector(projectTemplateDescriptionClassKey))
             projectTemplate.content.append(projectItem);
         else brokenElements.add(projectTemplateChildClassKey);
 
         // Skills
         const skillTemplate = this.#getOrCreateTemplate(skillTemplateNameKey, container);
         const skillItem = container.querySelector(skillTemplateChildClassKey);
-        if (skillItem !== null &&
-            skillItem.querySelector(skillTemplateNameClassKey) !== null &&
-            skillItem.querySelector(skillTemplateLevelClassKey) !== null)
+        if (skillItem &&
+            skillItem.querySelector(skillTemplateNameClassKey) &&
+            skillItem.querySelector(skillTemplateLevelClassKey))
             skillTemplate.content.append(skillItem);
         else
             brokenElements.add(skillTemplateChildClassKey);
@@ -205,8 +205,8 @@ class Template {
         // Hobbies
         const hobbyTemplate = this.#getOrCreateTemplate(hobbyTemplateNameKey, container);
         const hobbyItem = container.querySelector(hobbyTemplateChildClassKey);
-        if (hobbyItem !== null &&
-            hobbyItem.querySelector(hobbyTemplateNameClassKey) !== null)
+        if (hobbyItem &&
+            hobbyItem.querySelector(hobbyTemplateNameClassKey))
             hobbyTemplate.content.append(hobbyItem);
         else brokenElements.add(hobbyTemplateChildClassKey);
 
@@ -216,7 +216,7 @@ class Template {
          * 
          */
         this.#elementsCache.forEach((value, key) => {
-            if (value == null)
+            if (!value)
                 brokenElements.add(key);
         });
 

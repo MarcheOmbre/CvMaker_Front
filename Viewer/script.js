@@ -3,9 +3,11 @@ const markdownToHtmlConverter = new showdown.Converter({simpleLineBreaks: true})
 const styleContainer = document.getElementById("template_style");
 const structureContainer = document.getElementById("template_structure");
 const templateHandler = new Template();
+
+const sectionTitleParentClassKey = ".title-parent";
+const hiddenClassName = "hidden";
 const previewPaddingClassName = "preview-no-print";
 const imagePaddingClassName = "image-no-print";
-const printButtonDisplay = printButton.style.display;
 
 
 function fillSection(section, title, fillSection) {
@@ -24,7 +26,7 @@ async function refreshHtml(html) {
             throw new Error("Internal error : Failed to load the default structure :\n" + loadReferencesFeedback.message);
     }
 
-    if (!isNotStringOrEmpty(html)) {
+    if (!isStringNullOrEmpty(html)) {
         structureContainer.innerHTML = DOMPurify.sanitize(html);
         const loadReferencesFeedback = templateHandler.tryImport(html, structureContainer);
         if (!loadReferencesFeedback.success) {
@@ -34,19 +36,19 @@ async function refreshHtml(html) {
     } else
         await loadDefaultStructure();
 
-    SetNoPrint();
+    SetPrint(false);
 }
 
 async function refreshCss(css) {
     let cssContent = DOMPurify.sanitize(css);
-    if (isNotStringOrEmpty(cssContent))
+    if (isStringNullOrEmpty(cssContent))
         cssContent = await fetch("../Common/Template/style.css").then(response => response.text());
 
     styleContainer.textContent = cssContent;
 }
 
 function refreshSystemLanguage(language) {
-    if (!isNotStringOrEmpty(language))
+    if (!isStringNullOrEmpty(language))
         document.documentElement.lang = DOMPurify.sanitize(language);
 }
 
@@ -133,6 +135,7 @@ function refreshWorks(title, works) {
 
     const section = templateHandler.get(worksSectionIdKey);
     section.children[1].innerHTML = "";
+    section.querySelector(sectionTitleParentClassKey).classList.toggle(hiddenClassName, works.length === 0);
 
     const template = templateHandler.get(workTemplateNameKey);
     this.fillSection(section, title, content => {
@@ -177,6 +180,7 @@ function refreshEducations(title, educations) {
 
     const section = templateHandler.get(educationSectionIdKey);
     section.children[1].innerHTML = "";
+    section.querySelector(sectionTitleParentClassKey).classList.toggle(hiddenClassName, educations.length === 0);
 
     const template = templateHandler.get(educationTemplateNameKey);
     fillSection(section, title, content => {
@@ -201,6 +205,7 @@ function refreshLanguages(title, languages, languageLevels) {
 
     const section = templateHandler.get(languagesSectionIdKey);
     section.children[1].innerHTML = "";
+    section.querySelector(sectionTitleParentClassKey).classList.toggle(hiddenClassName, languages.length === 0);
 
     const template = templateHandler.get(languageTemplateNameKey);
     fillSection(section, title, content => {
@@ -227,6 +232,7 @@ function refreshProjects(title, projects) {
 
     const section = templateHandler.get(projectsSectionIdKey);
     section.children[1].innerHTML = "";
+    section.querySelector(sectionTitleParentClassKey).classList.toggle(hiddenClassName, projects.length === 0);
 
     const template = templateHandler.get(projectTemplateNameKey);
     fillSection(section, title, content => {
@@ -252,6 +258,7 @@ function refreshSkills(title, skills) {
 
     const section = templateHandler.get(skillsSectionIdKey);
     section.children[1].innerHTML = "";
+    section.querySelector(sectionTitleParentClassKey).classList.toggle(hiddenClassName, skills.length === 0);
 
     const template = templateHandler.get(skillTemplateNameKey);
     fillSection(section, title, content =>
@@ -278,6 +285,7 @@ function refreshHobbies(title, hobbies) {
 
     const section = templateHandler.get(hobbiesSectionIdKey);
     section.children[1].innerHTML = "";
+    section.querySelector(sectionTitleParentClassKey).classList.toggle(hiddenClassName, hobbies.length === 0);
 
     const template = templateHandler.get(hobbyTemplateNameKey);
     fillSection(section, title, content => {
@@ -320,23 +328,20 @@ async function refreshFromJson(dataJson) {
     refreshHobbies(systemLanguage.hobbiesTitle, dataJson.hobbies);
 }
 
-function SetNoPrint() {
-    printButton.style.display = printButtonDisplay;
-    structureContainer?.classList.add(previewPaddingClassName);
-    templateHandler?.get(imageIdKey).classList.add(imagePaddingClassName);
-}
+function SetPrint(boolean) {
+    if (boolean == null || typeof boolean !== "boolean")
+        throw new Error("Parameter mismatched");
 
-function SetPrint() {
-    printButton.style.display = "none";
-    structureContainer?.classList.remove(previewPaddingClassName);
-    templateHandler?.get(imageIdKey).classList.remove(imagePaddingClassName);
+    printButton.classList.toggle(hiddenClassName, boolean);
+    structureContainer?.classList.toggle(previewPaddingClassName, !boolean);
+    templateHandler?.get(imageIdKey).classList.toggle(imagePaddingClassName, !boolean);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
 
     printButton.onclick = _ => {
-        SetPrint();
+        SetPrint(true);
         this.print();
-        SetNoPrint();
+        SetPrint(false);
     }
 });

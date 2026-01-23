@@ -1,18 +1,22 @@
 ﻿class KeyPairValue {
     constructor(key, value) {
 
-        if (!isString(key))
+        if (isStringNullOrEmpty(key))
             throw new Error("Key must be a string");
 
         this.key = key;
         this.value = value;
+    }
+    
+    static IsTypeKeyPairValue(obj) {
+        return obj.key && isString(obj.key) && obj.value;
     }
 }
 
 class FunctionFeedback {
     constructor(success, error) {
 
-        if (!(success.type !== "boolean") || (error && !isString(error)))
+        if (typeof success !== "boolean" || (error && !isString(error)))
             throw new Error("Type mismatch");
 
         this.success = success;
@@ -20,19 +24,30 @@ class FunctionFeedback {
     }
 }
 
-function isNumeric(num) {
-    return (typeof (num) === 'number' || typeof (num) === "string" && num.trim() !== '') && !isNaN(num);
+function isNumericOrNumericString(num) {
+    
+    if(typeof (num) === 'number')
+        return true;
+    
+    return !(!isString(num) || isNaN(parseInt(num)) || isNaN(parseFloat(num)));
+    
+    
 }
 
 function isString(str) {
     return typeof (str) === 'string' || str === "";
 }
 
-function isNotStringOrEmpty(str) {
-    return !isString(str) || str.trim() === "";
+function isStringNullOrEmpty(str)
+{
+    return !isString(str) || str.length === 0;
 }
 
 function isEmailEntry(str) {
+    
+    if(isStringNullOrEmpty(str))
+        return false;
+    
     return str.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 }
 
@@ -44,4 +59,16 @@ function convertFileToBase64(file) {
             reader.onerror = reject;
         }
     )
+}
+
+function isValidDate(date) {
+    return date && Object.prototype.toString.call(date) === "[object Date]" && !isNaN(date);
+}
+
+function isValidHtmlElement(element) {
+    if(!element)
+        return false;
+    
+    const prototype = Object.prototype.toString.call(element);
+    return !(!prototype.includes("HTML") || !prototype.includes("Element"));
 }

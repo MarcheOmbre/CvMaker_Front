@@ -3,8 +3,8 @@ class Contact {
 
         obj.type ??= 0;
         obj.value ??= "";
-
-        if (!isNumeric(obj.type) || !isString(obj.value))
+        
+        if (!isNumericOrNumericString(obj.type) || !isString(obj.value))
             throw new Error("Type mismatch");
 
         this.type = obj.type;
@@ -12,7 +12,7 @@ class Contact {
     }
 
     static IsTypeContact(obj) {
-        return obj.type !== undefined && obj.value !== undefined;
+        return obj.type  && isNumericOrNumericString(obj.type) && obj.value && isString(obj.value);
     }
 }
 
@@ -30,7 +30,7 @@ class Link {
     }
 
     static IsTypeLink(obj) {
-        return obj.name !== undefined && obj.url !== undefined;
+        return obj.name && isString(obj.name) && obj.url && isString(obj.url);
     }
 }
 
@@ -41,14 +41,14 @@ class Work {
         obj.title ??= "";
         obj.company ??= "";
         obj.from ??= new Date();
-        if (isString(obj.from))
+        if (obj.from && isString(obj.from))
             obj.from = new Date(obj.from);
         obj.to ??= new Date();
-        if (isString(obj.to))
+        if (obj.to && isString(obj.to))
             obj.to = new Date(obj.to);
         obj.description ??= "";
 
-        if (!isString(obj.title) || !isString(obj.company) || !(obj.from instanceof Date) || !(obj.to instanceof Date) || !isString(obj.description))
+        if (!isString(obj.title) || !isString(obj.company) || !isValidDate(obj.from) || !isValidDate(obj.to) || !isString(obj.description))
             throw new Error("Type mismatch");
 
         this.title = obj.title;
@@ -59,7 +59,8 @@ class Work {
     }
 
     static IsTypeWork(obj) {
-        return obj.title !== undefined && obj.company !== undefined && obj.from !== undefined && obj.to !== undefined && obj.description !== undefined;
+        return obj.title && isString(obj.title) && obj.company && isString(obj.company) && 
+            isValidDate(obj.from) && isValidDate(obj.to) && obj.description && isString(obj.description);
     }
 }
 
@@ -68,10 +69,10 @@ class Education {
 
         obj.title ??= "";
         obj.date ??= new Date();
-        if (isString(obj.date))
+        if (obj.date && isString(obj.date))
             obj.date = new Date(obj.date);
 
-        if (!isString(obj.title) || !(obj.date instanceof Date))
+        if (!isString(obj.title) || !isValidDate(obj.date))
             throw new Error("Type mismatch");
 
         this.title = obj.title;
@@ -79,7 +80,7 @@ class Education {
     }
 
     static IsTypeEducation(obj) {
-        return obj.title !== undefined && obj.date !== undefined;
+        return obj.title && isString(obj.title) && isValidDate(obj.date);
     }
 }
 
@@ -89,11 +90,11 @@ class Project {
 
         obj.title ??= "";
         obj.date ??= new Date();
-        if (isString(obj.date))
+        if (obj.date && isString(obj.date))
             obj.date = new Date(obj.date);
         obj.description ??= "";
 
-        if (!isString(obj.title) || !(obj.date instanceof Date) || !isString(obj.description))
+        if (!isString(obj.title) || !isValidDate(obj.date) || !isString(obj.description))
             throw new Error("Type mismatch");
 
         this.title = obj.title;
@@ -102,7 +103,7 @@ class Project {
     }
 
     static IsTypeProject(obj) {
-        return obj.title !== undefined && obj.date !== undefined && obj.description !== undefined;
+        return obj.title && isString(obj.title) && isValidDate(obj.date) && obj.description && isString(obj.description);
     }
 }
 
@@ -112,7 +113,7 @@ class Language {
         obj.name ??= "";
         obj.level ??= 0;
 
-        if (!isString(obj.name) || !isNumeric(obj.level))
+        if (!isString(obj.name) || !isNumericOrNumericString(obj.level))
             throw new Error("Type mismatch");
 
         this.name = obj.name;
@@ -120,7 +121,7 @@ class Language {
     }
 
     static IsTypeLanguage(obj) {
-        return obj.name !== undefined && obj.level !== undefined;
+        return obj.name && isString(obj.name) && obj.level && isNumericOrNumericString(obj.level);
     }
 }
 
@@ -131,7 +132,7 @@ class Skill {
         obj.name ??= "";
         obj.level ??= 0;
 
-        if (!isString(obj.name) || !isNumeric(obj.level))
+        if (!isString(obj.name) || !isNumericOrNumericString(obj.level))
             throw new Error("Type mismatch");
 
         this.name = obj.name;
@@ -139,14 +140,14 @@ class Skill {
     }
 
     static IsTypeSkill(obj) {
-        return obj.name !== undefined;
+        return obj.name && isString(obj.name) && obj.level && isNumericOrNumericString(obj.level);
     }
 }
 
 class Hobby {
     constructor(obj = null) {
 
-        if (obj === null) {
+        if (!obj) {
             this.name = "";
             return;
         }
@@ -158,6 +159,6 @@ class Hobby {
     }
 
     static IsTypeHobby(obj) {
-        return obj.name !== undefined;
+        return obj.name && isString(obj.name);
     }
 }

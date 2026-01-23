@@ -1,12 +1,9 @@
 ﻿class SetNameDto {
     constructor(cvId, name) {
-        if (!isNumeric(cvId))
+        if (!isNumericOrNumericString(cvId))
             throw new Error("Id must be a number");
-
-        if (!isString(name))
-            throw new Error("Name must be a string");
-
-        if (name.trim() === "")
+        
+        if (isStringNullOrEmpty(name))
             throw new Error("Name can't be empty");
 
         this.cvId = cvId;
@@ -24,7 +21,7 @@ const loadingContent = "Loading...";
 
 
 async function addCv(cv) {
-    if (isNotStringOrEmpty(cv.name))
+    if (isStringNullOrEmpty(cv.name))
         throw new Error("Name can't be empty")
 
     const templateClone = document.importNode(cvItemTemplate.content, true).children[0];
@@ -32,7 +29,7 @@ async function addCv(cv) {
     children[0].maxLength = MaxNameLength;
     children[0].value = cv.name;
     children[0].onchange = async function () {
-        if (isNotStringOrEmpty(children[0].value)) {
+        if (isStringNullOrEmpty(children[0].value)) {
             children[0].value = cv.name;
             return;
         }

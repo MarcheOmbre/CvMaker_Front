@@ -58,7 +58,7 @@ async function importFromJson(dataJson) {
 
     // Get the system language
     let systemLanguagePath = systemLanguageSelect.value;
-    if (!isNotStringOrEmpty(dataJson.systemLanguage))
+    if (!isStringNullOrEmpty(dataJson.systemLanguage))
         systemLanguagePath = dataJson.systemLanguage;
     languageSystem = await fetch(systemLanguagePath).then(response => response.json());
 
@@ -74,7 +74,7 @@ async function importFromJson(dataJson) {
     dataJson.languages.forEach(element => addLanguage(new Language(element)));
     dataJson.skills.forEach(element => addSkill(new Skill(element)));
     dataJson.hobbies.forEach(element => addHobby(new Hobby(element)));
-    if (!isNotStringOrEmpty(dataJson.image)) {
+    if (!isStringNullOrEmpty(dataJson.image)) {
 
         const sanitizedImage = DOMPurify.sanitize(dataJson.image);
         const blob = await fetch(sanitizedImage).then(response => response.blob());
@@ -85,20 +85,19 @@ async function importFromJson(dataJson) {
             refreshImage(photoInput.files[0]);
         }
     }
-    if (!isNotStringOrEmpty(dataJson.customCss)) {
+    if (!isStringNullOrEmpty(dataJson.customCss)) {
 
         const sanitizedCss = DOMPurify.sanitize(dataJson.customCss);
         const blob = new Blob([sanitizedCss], {type: 'text/css'});
         if (blob) {
             const dt = new DataTransfer();
-
             dt.items.add(new File([blob], 'customCss.css'));
             customCssInput.files = dt.files;
             await refreshCustomCss(sanitizedCss);
         }
     }
 
-    if (!isNotStringOrEmpty(dataJson.customHtml)) {
+    if (!isStringNullOrEmpty(dataJson.customHtml)) {
 
         const sanitizedHtml = DOMPurify.sanitize(dataJson.customHtml);
         const blob = new Blob([sanitizedHtml], {type: 'text/html'});
@@ -321,13 +320,13 @@ function refreshImagePreview(image = null) {
 }
 
 async function refreshCustomCss(customCss = "") {
-    const hasCss = !isNotStringOrEmpty(customCss);
+    const hasCss = !isStringNullOrEmpty(customCss);
     removeCssButton.style.display = hasCss ? "block" : "none";
     await frame.contentWindow.refreshCss(customCss);
 }
 
 async function refreshCustomHtml(customHtml = "") {
-    const hasHtml = !isNotStringOrEmpty(customHtml);
+    const hasHtml = !isStringNullOrEmpty(customHtml);
     removeHtmlButton.style.display = hasHtml ? "block" : "none";
     await refreshViewerJson();
 }
@@ -369,7 +368,7 @@ function encapsulateInMovable(htmlElement, refreshFunction) {
 
 function addContact(contact = new Contact()) {
 
-    if (!(contact instanceof Contact) || !languageSystem)
+    if (!Object.prototype.toString.call(contact) === "[object Contact]" || !languageSystem)
         return;
 
 
@@ -699,7 +698,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             let image = null;
 
             if (event.target.files.length > 0 && event.target.files[0]) {
-                if (event.target.files[0].type.includes("image") === false) {
+                if (!event.target.files[0].type.includes("image")) {
                     showMessage(message, "The selected file is not an image", MessageEnums.Error);
                     event.target.value = '';
                     return;
@@ -740,7 +739,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             let css = "";
 
             if (event.target.files.length > 0 && event.target.files[0]) {
-                if (event.target.files[0].type.includes("css") === false) {
+                if (!event.target.files[0].type.includes("css")) {
                     showMessage(message, "The selected file is not a css file", MessageEnums.Error);
                     event.target.value = '';
                     return;
@@ -753,6 +752,10 @@ document.addEventListener("DOMContentLoaded", async function () {
                 }
 
                 css = await event.target.files[0].text();
+                if(isStringNullOrEmpty(css)){
+                    showMessage(message, "The selected file is empty", MessageEnums.Error);
+                    event.target.value = '';
+                }
             }
 
             await refreshCustomCss(css);
@@ -768,7 +771,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             let html = "";
 
             if (event.target.files.length > 0 && event.target.files[0]) {
-                if (event.target.files[0].type.includes("html") === false) {
+                if (!event.target.files[0].type.includes("html")) {
                     showMessage(message, "The selected file is not a html file", MessageEnums.Error);
                     event.target.value = '';
                     return;
@@ -781,6 +784,10 @@ document.addEventListener("DOMContentLoaded", async function () {
                 }
 
                 html = await event.target.files[0].text();
+                if(isStringNullOrEmpty(html)){
+                    showMessage(message, "The selected file is empty", MessageEnums.Error);
+                    event.target.value = '';
+                }
             }
 
             await refreshCustomHtml(html);

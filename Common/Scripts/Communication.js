@@ -3,14 +3,14 @@ async function SendRequest(type, tokenToInject, parameters, link, data, onSuccee
     if (type !== "GET" && type !== "POST" && type !== "PUT" && type !== "DELETE")
         throw new Error("Invalid request type");
 
-    if (!isString(link))
+    if (isStringNullOrEmpty(link))
         throw new Error("Link must be a string")
 
     // Inject parameters if there are any
     if (parameters) {
         let parametersString = "";
         for (let i = 0; i < parameters.length; i++) {
-            if (!(parameters[i] instanceof KeyPairValue))
+            if (!KeyPairValue.IsTypeKeyPairValue(parameters[i]))
                 throw new Error("Parameters must be KeyPairValue");
 
             parametersString += parameters[i].key + "=" + parameters[i].value;
