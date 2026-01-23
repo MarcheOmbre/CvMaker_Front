@@ -9,7 +9,7 @@ class LoginDto {
         if (!isEmailEntry(email))
             throw new Error("Invalid email pattern");
 
-        if (isStringNullOrEmpty(password))
+        if (isNullOrEmptyString(password))
             throw new Error("Password must be a valid string");
 
         this.email = email;
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             return;
         }
 
-        if (isStringNullOrEmpty(passwordInput.value)) {
+        if (isNullOrEmptyString(passwordInput.value)) {
             showMessage(message, "Password can't be null", MessageEnums.Error);
             return;
         }

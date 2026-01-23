@@ -1,7 +1,7 @@
 ﻿class KeyPairValue {
     constructor(key, value) {
 
-        if (isStringNullOrEmpty(key))
+        if (isNullOrEmptyString(key))
             throw new Error("Key must be a string");
 
         this.key = key;
@@ -29,23 +29,21 @@ function isNumericOrNumericString(num) {
     if(typeof (num) === 'number')
         return true;
     
-    return !(!isString(num) || isNaN(parseInt(num)) || isNaN(parseFloat(num)));
-    
-    
+    return isString(num) && (!isNaN(parseInt(num)) || !isNaN(parseFloat(num)));
 }
 
 function isString(str) {
     return typeof (str) === 'string' || str === "";
 }
 
-function isStringNullOrEmpty(str)
+function isNullOrEmptyString(str)
 {
     return !isString(str) || str.length === 0;
 }
 
 function isEmailEntry(str) {
     
-    if(isStringNullOrEmpty(str))
+    if(isNullOrEmptyString(str))
         return false;
     
     return str.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);

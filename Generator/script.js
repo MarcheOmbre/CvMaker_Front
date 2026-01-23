@@ -1,4 +1,5 @@
-﻿const systemLanguageSelect = document.getElementById("system-language");
+﻿const nameInput = document.getElementById("name_input");
+const systemLanguageSelect = document.getElementById("system-language");
 const removePhotoButton = document.getElementById("photo-remove_button");
 const photoInput = document.getElementById("photo-input");
 const photoReader = document.getElementById("photo-reader");
@@ -58,11 +59,12 @@ async function importFromJson(dataJson) {
 
     // Get the system language
     let systemLanguagePath = systemLanguageSelect.value;
-    if (!isStringNullOrEmpty(dataJson.systemLanguage))
+    if (!isNullOrEmptyString(dataJson.systemLanguage))
         systemLanguagePath = dataJson.systemLanguage;
     languageSystem = await fetch(systemLanguagePath).then(response => response.json());
 
     // Fill the fields
+    nameInput.value = DOMPurify.sanitize(dataJson.name);
     titleInput.value = DOMPurify.sanitize(dataJson.title);
     professionInput.value = DOMPurify.sanitize(dataJson.profession);
     aboutMeInput.value = DOMPurify.sanitize(dataJson.aboutMe);
@@ -74,7 +76,7 @@ async function importFromJson(dataJson) {
     dataJson.languages.forEach(element => addLanguage(new Language(element)));
     dataJson.skills.forEach(element => addSkill(new Skill(element)));
     dataJson.hobbies.forEach(element => addHobby(new Hobby(element)));
-    if (!isStringNullOrEmpty(dataJson.image)) {
+    if (!isNullOrEmptyString(dataJson.image)) {
 
         const sanitizedImage = DOMPurify.sanitize(dataJson.image);
         const blob = await fetch(sanitizedImage).then(response => response.blob());
@@ -85,7 +87,7 @@ async function importFromJson(dataJson) {
             refreshImage(photoInput.files[0]);
         }
     }
-    if (!isStringNullOrEmpty(dataJson.customCss)) {
+    if (!isNullOrEmptyString(dataJson.customCss)) {
 
         const sanitizedCss = DOMPurify.sanitize(dataJson.customCss);
         const blob = new Blob([sanitizedCss], {type: 'text/css'});
@@ -97,7 +99,7 @@ async function importFromJson(dataJson) {
         }
     }
 
-    if (!isStringNullOrEmpty(dataJson.customHtml)) {
+    if (!isNullOrEmptyString(dataJson.customHtml)) {
 
         const sanitizedHtml = DOMPurify.sanitize(dataJson.customHtml);
         const blob = new Blob([sanitizedHtml], {type: 'text/html'});
@@ -116,6 +118,7 @@ async function importFromJson(dataJson) {
 async function generateJson() {
 
     const jsonObject = {};
+    jsonObject.name = DOMPurify.sanitize(nameInput.value);
     jsonObject.systemLanguage = DOMPurify.sanitize(systemLanguageSelect.value);
     jsonObject.title = extractTitle();
     jsonObject.profession = extractProfession();
@@ -320,13 +323,13 @@ function refreshImagePreview(image = null) {
 }
 
 async function refreshCustomCss(customCss = "") {
-    const hasCss = !isStringNullOrEmpty(customCss);
+    const hasCss = !isNullOrEmptyString(customCss);
     removeCssButton.style.display = hasCss ? "block" : "none";
     await frame.contentWindow.refreshCss(customCss);
 }
 
 async function refreshCustomHtml(customHtml = "") {
-    const hasHtml = !isStringNullOrEmpty(customHtml);
+    const hasHtml = !isNullOrEmptyString(customHtml);
     removeHtmlButton.style.display = hasHtml ? "block" : "none";
     await refreshViewerJson();
 }
@@ -602,10 +605,10 @@ function addProject(project = new Project()) {
 }
 
 function addSkill(skill = new Skill()) {
-
+    
     if (!Skill.IsTypeSkill(skill) || !languageSystem)
         return;
-
+    
     const refreshFunction = () => frame.contentWindow.refreshSkills(languageSystem.skillsTitle, extractSkills());
     const refreshCreateButton = () => addSkillButton.style.display = skillsDiv.children.length < MaxItems ? 'block' : 'none';
 
@@ -716,6 +719,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             refreshImage(image);
             refreshImagePreview(image);
         };
+        nameInput.maxLength = MaxNameLength;
         titleInput.maxLength = MaxNameLength;
         titleInput.oninput = _ => frame.contentWindow.refreshTitle(extractTitle());
         professionInput.maxLength = MaxNameLength;
@@ -752,7 +756,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 }
 
                 css = await event.target.files[0].text();
-                if(isStringNullOrEmpty(css)){
+                if(isNullOrEmptyString(css)){
                     showMessage(message, "The selected file is empty", MessageEnums.Error);
                     event.target.value = '';
                 }
@@ -784,7 +788,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 }
 
                 html = await event.target.files[0].text();
-                if(isStringNullOrEmpty(html)){
+                if(isNullOrEmptyString(html)){
                     showMessage(message, "The selected file is empty", MessageEnums.Error);
                     event.target.value = '';
                 }
@@ -820,6 +824,13 @@ document.addEventListener("DOMContentLoaded", async function () {
             saveButton.disabled = true;
 
             const cv = await generateJson();
+            
+            if(isNullOrEmptyString(cv.name)){
+                showMessage(message, "The name of the cv is empty", MessageEnums.Error);
+                saveButton.disabled = false;
+                return;
+            }
+            
             cv.id = sessionStorage.getItem(CvIdItemKey);
             await SendRequest("POST", localStorage.getItem(TokenKey), null, APILink + "Cv/Modify",
                 cv, null, response => showMessage(message, response, MessageEnums.Error));

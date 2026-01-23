@@ -4,11 +4,12 @@
     --theme-color-button: #424874;
     --theme-color-button-hover: #525984;
     --theme-color-button-disabled: #999999;
-    --theme-color-button-borders: #A6B1E1;
-    --theme-color-area: #ede8ff;
+    --theme-color-button-borders: #adb1d3;
+    --theme-color-area: #f2f1f7;
     --theme-color-text-dark: black;
     --theme-color-text-light: white;
     --theme-color-overlay: rgba(166, 177, 225, 0.7);
+    --button-size: 35px;
 }
 
 * {
@@ -104,8 +105,7 @@ svg {
     background-color: var(--theme-color-background-light);
     height: auto;
     padding: 40px 50px;
-    border-radius: 20px;
-    border: 2px solid var(--theme-color-button-borders);
+    border: 1px solid var(--theme-color-button-borders);
 }
 
 .input-logo_container {
@@ -168,10 +168,10 @@ svg {
 }
 
 .squared-button {
-    min-width: 35px;
-    max-width: 35px;
-    width: 35px;
-    height: 35px;
+    min-width: var(--button-size);
+    max-width: var(--button-size);
+    width: var(--button-size);
+    height: var(--button-size);
 }
 
 .squared-button svg {

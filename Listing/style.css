@@ -15,7 +15,6 @@ body div {
 #cvs {
     background-color: var(--theme-color-background-dark);
     padding: 20px;
-    border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -34,6 +33,6 @@ body div {
     width: 400px;
     display: grid;
     justify-content: center;
-    grid-template-columns: 250px 50px 50px;
+    grid-template-columns: 250px repeat(3, var(--button-size));
     gap: 5px;
 }

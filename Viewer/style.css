@@ -17,12 +17,8 @@
 }
 
 .squared-button {
-    background-color: var(--theme-color-button);
     border: none;
-    color: var(--theme-color-text-light);
     padding: 10px;
-    width: 45px;
-    height: 45px;
     border-radius: 90px;
 }
 

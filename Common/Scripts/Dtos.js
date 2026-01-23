@@ -12,7 +12,7 @@ class Contact {
     }
 
     static IsTypeContact(obj) {
-        return obj.type  && isNumericOrNumericString(obj.type) && obj.value && isString(obj.value);
+        return isNumericOrNumericString(obj.type) && isString(obj.value);
     }
 }
 
@@ -30,7 +30,7 @@ class Link {
     }
 
     static IsTypeLink(obj) {
-        return obj.name && isString(obj.name) && obj.url && isString(obj.url);
+        return isString(obj.name) && isString(obj.url);
     }
 }
 
@@ -59,8 +59,8 @@ class Work {
     }
 
     static IsTypeWork(obj) {
-        return obj.title && isString(obj.title) && obj.company && isString(obj.company) && 
-            isValidDate(obj.from) && isValidDate(obj.to) && obj.description && isString(obj.description);
+        return isString(obj.title) && isString(obj.company) && 
+            isValidDate(obj.from) && isValidDate(obj.to) && isString(obj.description);
     }
 }
 
@@ -80,7 +80,7 @@ class Education {
     }
 
     static IsTypeEducation(obj) {
-        return obj.title && isString(obj.title) && isValidDate(obj.date);
+        return isString(obj.title) && isValidDate(obj.date);
     }
 }
 
@@ -103,7 +103,7 @@ class Project {
     }
 
     static IsTypeProject(obj) {
-        return obj.title && isString(obj.title) && isValidDate(obj.date) && obj.description && isString(obj.description);
+        return isString(obj.title) && isValidDate(obj.date) && isString(obj.description);
     }
 }
 
@@ -121,7 +121,7 @@ class Language {
     }
 
     static IsTypeLanguage(obj) {
-        return obj.name && isString(obj.name) && obj.level && isNumericOrNumericString(obj.level);
+        return isString(obj.name) && isNumericOrNumericString(obj.level);
     }
 }
 
@@ -140,7 +140,7 @@ class Skill {
     }
 
     static IsTypeSkill(obj) {
-        return obj.name && isString(obj.name) && obj.level && isNumericOrNumericString(obj.level);
+        return isString(obj.name) && isNumericOrNumericString(obj.level);
     }
 }
 
@@ -159,6 +159,6 @@ class Hobby {
     }
 
     static IsTypeHobby(obj) {
-        return obj.name && isString(obj.name);
+        return isString(obj.name);
     }
 }
