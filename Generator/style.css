@@ -38,7 +38,7 @@ h2 {
 
 .grid {
     display: grid;
-    grid-template-columns: 200px auto;
+    grid-template-columns: 110px auto;
     grid-gap: 50px;
     padding-bottom: 50px;
     text-align: left;
@@ -78,7 +78,7 @@ h2 {
 }
 
 .movable_element button {
-    min-width: 0;
+    min-width: var(--buttonsize);
     width: var(--buttonsize);
     height: var(--buttonsize);
 }
@@ -113,7 +113,7 @@ h2 {
 .contact-item, .link-item {
     width: 100%;
     display: grid;
-    grid-template-columns: auto auto var(--buttonsize);
+    grid-template-columns: 100px auto var(--buttonsize);
     grid-gap: 10px;
 }
 
@@ -187,6 +187,12 @@ h2 {
 }
 
 @media screen and (max-width: 768px) {
+    
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
     .movable_element:has(.work-item), .movable_element:has(.project-item) {
         flex-direction: column;
     }
