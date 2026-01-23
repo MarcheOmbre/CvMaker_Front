@@ -156,7 +156,7 @@ async function generateJson() {
     jsonObject.customHtml = "";
     if (customHtmlInput.files.length > 0 && customHtmlInput.files[0])
         jsonObject.customHtml = DOMPurify.sanitize(await customHtmlInput.files[0].text());
-    
+
     return jsonObject;
 }
 
@@ -316,8 +316,7 @@ function refreshImagePreview(image = null) {
             frame.contentWindow.refreshImage(e.target.result);
         };
         fileReader.readAsDataURL(image);
-    } 
-    else
+    } else
         frame.contentWindow.refreshImage(null);
 }
 
@@ -621,7 +620,7 @@ function addSkill(skill = new Skill()) {
     levelInput.placeholder = "/10";
     levelInput.value = skill.level;
     levelInput.oninput = refreshFunction;
-    
+
     const nameInput = children[1];
     nameInput.maxLength = MaxNameLength;
     nameInput.value = DOMPurify.sanitize(skill.name);
@@ -674,7 +673,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         if (!await checkIsLogged())
             return;
-        
+
         systemLanguageSelect.onchange = async function (event) {
             let index = 0;
             for (let i = 0; i < systemLanguageSelect.options.length; i++) {
@@ -695,8 +694,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             refreshImage();
             refreshImagePreview();
         };
-        photoInput.onchange = async function(event){
-            
+        photoInput.onchange = async function (event) {
+
             let image = null;
 
             if (event.target.files.length > 0 && event.target.files[0]) {
@@ -788,16 +787,16 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
 
         const downloadButton = document.getElementById("download_template_button");
-        downloadButton.onclick = async function(){
+        downloadButton.onclick = async function () {
 
             downloadButton.disabled = true;
-            
+
             const zip = new JSZip();
             zip.file("initialStructure.html", await fetch("../Common/Template/structure.html").then(response => response.text()));
             zip.file("initialStyle.css", await fetch("../Common/Template/style.css").then(response => response.text()));
-            if(customHtmlInput.files.length > 0)
+            if (customHtmlInput.files.length > 0)
                 zip.file("customStructure.html", await customHtmlInput.files[0].text());
-            if(customCssInput.files.length > 0)
+            if (customCssInput.files.length > 0)
                 zip.file("customStyle.css", await customCssInput.files[0].text());
             zip.generateAsync({type: "blob"})
                 .then(function (content) {

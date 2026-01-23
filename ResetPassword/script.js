@@ -5,23 +5,23 @@ const message = document.getElementById("message");
 
 class ResetPasswordDto {
     constructor(password, passwordConfirmation) {
-        
-        if(!isString(password))
+
+        if (!isString(password))
             throw new Error("Password must be a string");
-        
-        if(password !== passwordConfirmation)
+
+        if (password !== passwordConfirmation)
             throw new Error("Passwords doesn't match");
-        
+
         this.password = password;
         this.passwordConfirmation = passwordConfirmation;
     }
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
-    
+
     passwordInput.maxLength = MaxPasswordLength;
     passwordConfirmationInput.maxLength = MaxPasswordLength;
-    
+
     resetButton.onclick = async _ => {
 
         if (passwordInput.value === "") {
@@ -40,19 +40,19 @@ document.addEventListener("DOMContentLoaded", async function () {
             throw new Error("Token must be a string");
 
         resetButton.disabled = true;
-        
-        if(isNotStringOrEmpty(passwordInput.value)){
+
+        if (isNotStringOrEmpty(passwordInput.value)) {
             showMessage(message, "Password can't be null", MessageEnums.Error);
             resetButton.disabled = false;
             return;
         }
-        
-        if(passwordInput.value !== passwordConfirmationInput.value){
+
+        if (passwordInput.value !== passwordConfirmationInput.value) {
             showMessage(message, "Passwords doesn't match", MessageEnums.Error);
             resetButton.disabled = false;
             return;
         }
-        
+
         await SendRequest("POST", token, null,
             APILink + "Authentification/ResetPassword",
             new ResetPasswordDto(passwordInput.value, passwordConfirmationInput.value),

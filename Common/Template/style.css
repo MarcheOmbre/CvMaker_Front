@@ -3,31 +3,31 @@
 * General 
 *
 */
-:root{
+:root {
     --main-color: #d9ebff;
 }
 
-*{
+* {
     padding: 0;
     margin: 0;
 }
 
-html{
+html {
     background-color: white;
 }
 
-#content{
-    padding : 10px;
+#content {
+    padding: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-section{
+section {
     width: 100%;
 }
 
-h1{
+h1 {
     font-family: "Lato", sans-serif;
     font-weight: 500;
     font-style: normal;
@@ -36,7 +36,7 @@ h1{
     text-align: left;
 }
 
-h2{
+h2 {
     font-family: "Epilogue", sans-serif;
     font-weight: 300;
     font-style: normal;
@@ -71,9 +71,17 @@ progress {
     appearance: none;
 }
 
-progress::-webkit-progress-bar { background-color: white; }
-progress::-webkit-progress-value{ background-color: var(--main-color); }
-progress::-moz-progress-bar{ background-color: var(--main-color); }
+progress::-webkit-progress-bar {
+    background-color: white;
+}
+
+progress::-webkit-progress-value {
+    background-color: var(--main-color);
+}
+
+progress::-moz-progress-bar {
+    background-color: var(--main-color);
+}
 
 /* 
 *
@@ -82,7 +90,7 @@ progress::-moz-progress-bar{ background-color: var(--main-color); }
 */
 
 /* Inner content */
-li, p, .education-item h4{
+li, p, .education-item h4 {
     font-family: "Montserrat", sans-serif;
     font-optical-sizing: auto;
     font-weight: 400;
@@ -97,7 +105,7 @@ li, p, .education-item h4{
     border-left: 1px solid darkgray;
 }
 
-section .title-parent{
+section .title-parent {
     background-color: var(--main-color);
     padding-top: 3px;
     padding-bottom: 3px;
@@ -105,16 +113,16 @@ section .title-parent{
     text-align: center;
     width: 100%;
     max-width: 100%;
-    margin-top : 4px;
-    margin-bottom : 4px;
+    margin-top: 4px;
+    margin-bottom: 4px;
 }
 
 /* Space before a list content, avoiding to get the same alignment for texts and lists */
-section .content ul, ul.content{
-    padding-left : 20px;
+section .content ul, ul.content {
+    padding-left: 20px;
 }
 
-.work_header, .education-item, .project_header{
+.work_header, .education-item, .project_header {
     display: flex;
     flex-direction: row;
     gap: 15px;
@@ -126,7 +134,7 @@ section .content ul, ul.content{
     padding-top: 5px;
 }
 
-#languages ul, #hobbies ul{
+#languages ul, #hobbies ul {
     display: flex;
     flex-direction: row;
     gap: 30px;
@@ -139,15 +147,15 @@ section .content ul, ul.content{
 * CV Header 
 *
 */
-#header{
+#header {
     min-height: 120px;
 }
 
-#header_contacts{
+#header_contacts {
     margin-bottom: 5px;
 }
 
-#header_image{
+#header_image {
     float: right;
     width: 100px;
     height: 100px;
@@ -157,7 +165,7 @@ section .content ul, ul.content{
     right: 0;
 }
 
-#header_contacts{
+#header_contacts {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -165,11 +173,11 @@ section .content ul, ul.content{
     list-style: none;
 }
 
-.contact-item .type{
+.contact-item .type {
     display: none;
 }
 
-#header_links{
+#header_links {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -180,7 +188,7 @@ section .content ul, ul.content{
     margin-bottom: 10px;
 }
 
-.link-item{
+.link-item {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -190,22 +198,22 @@ section .content ul, ul.content{
     background-color: var(--main-color);
 }
 
-.link-item a{
+.link-item a {
     color: black;
 }
 
-#skills ul, #languages ul, #hobbies ul{
+#skills ul, #languages ul, #hobbies ul {
     padding-left: 0;
     list-style: none;
 }
 
-.skill-item{
+.skill-item {
     display: grid;
     grid-template-columns: 150px 100px;
     gap: 5px;
 }
 
-.language-item{
+.language-item {
     display: flex;
     flex-direction: row;
     gap: 5px;
@@ -225,26 +233,26 @@ section .content ul, ul.content{
     order: 2;
 }
 
-#skills{
+#skills {
     order: 3;
 }
 
-#work{
+#work {
     order: 5;
 }
 
-#projects{
+#projects {
     order: 4;
 }
 
-#education{
+#education {
     order: 6;
 }
 
-#languages{
+#languages {
     order: 7;
 }
 
-#hobbies{
+#hobbies {
     order: 8;
 }

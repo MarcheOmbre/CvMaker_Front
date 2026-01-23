@@ -1,20 +1,19 @@
-:root{
+:root {
     --theme-color-button: #424874;
     --theme-color-text-light: white;
 }
 
-.preview-no-print{
+.preview-no-print {
     padding: 16mm;
 }
 
-.image-no-print{
+.image-no-print {
     margin-top: 16mm;
     margin-right: 16mm;
 }
 
 
-
-.squared-button{
+.squared-button {
     background-color: var(--theme-color-button);
     border: none;
     color: var(--theme-color-text-light);
@@ -24,7 +23,7 @@
     border-radius: 90px;
 }
 
-#print_button{
+#print_button {
     position: fixed;
     bottom: 10px;
     right: 10px;

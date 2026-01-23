@@ -1,22 +1,20 @@
-async function SendRequest(type, tokenToInject, parameters, link, data, onSucceed, onFailed){
-    
-    if(type !== "GET" && type !== "POST" && type !== "PUT" && type !== "DELETE")
+async function SendRequest(type, tokenToInject, parameters, link, data, onSucceed, onFailed) {
+
+    if (type !== "GET" && type !== "POST" && type !== "PUT" && type !== "DELETE")
         throw new Error("Invalid request type");
-    
-    if(!isString(link))
+
+    if (!isString(link))
         throw new Error("Link must be a string")
-    
+
     // Inject parameters if there are any
-    if(parameters)
-    {
+    if (parameters) {
         let parametersString = "";
-        for(let i = 0; i < parameters.length; i++)
-        {
-            if(!(parameters[i] instanceof KeyPairValue))
+        for (let i = 0; i < parameters.length; i++) {
+            if (!(parameters[i] instanceof KeyPairValue))
                 throw new Error("Parameters must be KeyPairValue");
 
             parametersString += parameters[i].key + "=" + parameters[i].value;
-            if(i !== parameters.length - 1)
+            if (i !== parameters.length - 1)
                 parametersString += "&";
         }
 
@@ -41,14 +39,12 @@ async function SendRequest(type, tokenToInject, parameters, link, data, onSuccee
 
     const response = await fetch(link, options);
     const textResponse = await response.text();
-    
-    if(response.ok){
-        if(onSucceed)
+
+    if (response.ok) {
+        if (onSucceed)
             onSucceed(textResponse);
-    } 
-    else 
-    {
-        if(onFailed)
+    } else {
+        if (onFailed)
             onFailed(textResponse);
     }
 }

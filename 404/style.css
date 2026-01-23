@@ -1,4 +1,4 @@
-body{
+body {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -6,22 +6,22 @@ body{
     height: 100vh;
 }
 
-h1{
+h1 {
     padding: 0;
 }
 
-.window{
+.window {
     display: flex;
     flex-direction: column;
     gap: 30px;
     align-items: center;
 }
 
-a{
+a {
     text-decoration: none;
     color: var(--theme-color-text-light)
 }
 
-button:hover{
+button:hover {
     background-color: var(--theme-color-button-hover);
 }

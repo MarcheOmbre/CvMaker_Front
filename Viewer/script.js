@@ -16,37 +16,32 @@ function fillSection(section, title, fillSection) {
     fillSection(section.querySelector(sectionContentClassKey));
 }
 
-async function refreshHtml(html) 
-{
-    async function loadDefaultStructure()
-    {
+async function refreshHtml(html) {
+    async function loadDefaultStructure() {
         const html = await fetch("../Common/Template/structure.html").then(response => response.text());
         const loadReferencesFeedback = templateHandler.tryImport(html, structureContainer);
-        if(!loadReferencesFeedback.success)
+        if (!loadReferencesFeedback.success)
             throw new Error("Internal error : Failed to load the default structure :\n" + loadReferencesFeedback.message);
     }
 
-    if(!isNotStringOrEmpty(html))
-    {
+    if (!isNotStringOrEmpty(html)) {
         structureContainer.innerHTML = DOMPurify.sanitize(html);
         const loadReferencesFeedback = templateHandler.tryImport(html, structureContainer);
-        if(!loadReferencesFeedback.success){
+        if (!loadReferencesFeedback.success) {
             alert("The custom structure template failed to load.\nThe default template is loaded instead.\n" + loadReferencesFeedback.message)
             await loadDefaultStructure();
         }
-    }
-    else
+    } else
         await loadDefaultStructure();
 
     SetNoPrint();
 }
 
-async function refreshCss(css) 
-{
+async function refreshCss(css) {
     let cssContent = DOMPurify.sanitize(css);
-    if(isNotStringOrEmpty(cssContent))
+    if (isNotStringOrEmpty(cssContent))
         cssContent = await fetch("../Common/Template/style.css").then(response => response.text());
-    
+
     styleContainer.textContent = cssContent;
 }
 
@@ -56,8 +51,8 @@ function refreshSystemLanguage(language) {
 }
 
 function refreshTitle(title) {
-    if (isString(title)){
-        templateHandler.get(titleIdKey).innerHTML = DOMPurify.sanitize(title);   
+    if (isString(title)) {
+        templateHandler.get(titleIdKey).innerHTML = DOMPurify.sanitize(title);
     }
 }
 
@@ -67,12 +62,12 @@ function refreshProfession(profession) {
 }
 
 function refreshImage(image) {
-    
+
     const imageEntry = templateHandler.get(imageIdKey);
     if (isString(image))
         imageEntry.src = DOMPurify.sanitize(image);
-    
-    imageEntry.style.display = image  ? "block" : "none";
+
+    imageEntry.style.display = image ? "block" : "none";
 }
 
 function refreshContacts(contacts, contactTypes) {
@@ -86,10 +81,10 @@ function refreshContacts(contacts, contactTypes) {
     const template = templateHandler.get(contactTemplateNameKey);
     contacts.forEach(element => {
 
-        if(!Contact.IsTypeContact(element))
+        if (!Contact.IsTypeContact(element))
             return;
 
-        const type =  element.type < contactTypes.length ? contactTypes[element.type] : "Unknown";
+        const type = element.type < contactTypes.length ? contactTypes[element.type] : "Unknown";
         const templateClone = document.importNode(template.content, true);
         templateClone.querySelector(contactTemplateTypeClassKey).innerHTML = type;
         templateClone.querySelector(contactTemplateValueClassKey).innerHTML = DOMPurify.sanitize(element.value);
@@ -108,9 +103,9 @@ function refreshLinks(links) {
     const template = templateHandler.get(linkTemplateNameKey);
     links.forEach(element => {
 
-        if(!Link.IsTypeLink(element))
+        if (!Link.IsTypeLink(element))
             return;
-        
+
         const templateClone = document.importNode(template.content, true);
         templateClone.querySelector(linkTemplateNameClassKey).innerHTML = DOMPurify.sanitize(element.name);
         const link = DOMPurify.sanitize(element.url);
@@ -122,17 +117,17 @@ function refreshLinks(links) {
 }
 
 function refreshAboutMe(title, text) {
-    
+
     if (!isString(title))
         return;
-    
+
     fillSection(templateHandler.get(aboutMeSectionIdKey), title, content => {
         content.innerHTML = DOMPurify.sanitize(markdownToHtmlConverter.makeHtml(text));
     });
 }
 
 function refreshWorks(title, works) {
-    
+
     if (!isString(title) || !works || !Array.isArray(works))
         return;
 
@@ -143,7 +138,7 @@ function refreshWorks(title, works) {
     this.fillSection(section, title, content => {
         works.forEach(element => {
 
-            if(!Work.IsTypeWork(element))
+            if (!Work.IsTypeWork(element))
                 return;
 
             // Format month to force xx/yyyy format
@@ -182,12 +177,12 @@ function refreshEducations(title, educations) {
 
     const section = templateHandler.get(educationSectionIdKey);
     section.children[1].innerHTML = "";
-    
+
     const template = templateHandler.get(educationTemplateNameKey);
     fillSection(section, title, content => {
         educations.forEach(element => {
 
-            if(!Education.IsTypeEducation(element))
+            if (!Education.IsTypeEducation(element))
                 return;
 
             const templateClone = document.importNode(template.content, true);
@@ -206,14 +201,14 @@ function refreshLanguages(title, languages, languageLevels) {
 
     const section = templateHandler.get(languagesSectionIdKey);
     section.children[1].innerHTML = "";
-    
+
     const template = templateHandler.get(languageTemplateNameKey);
     fillSection(section, title, content => {
         languages.forEach(element => {
-            
-            if(!Language.IsTypeLanguage(element))
+
+            if (!Language.IsTypeLanguage(element))
                 return;
-            
+
             const level = element.level < languageLevels.length ? languageLevels[element.level] : "Unknown";
 
             const templateClone = document.importNode(template.content, true);
@@ -226,25 +221,25 @@ function refreshLanguages(title, languages, languageLevels) {
 }
 
 function refreshProjects(title, projects) {
-    
+
     if (!isString(title) || !projects || !Array.isArray(projects))
         return;
 
     const section = templateHandler.get(projectsSectionIdKey);
     section.children[1].innerHTML = "";
-    
+
     const template = templateHandler.get(projectTemplateNameKey);
     fillSection(section, title, content => {
         projects.forEach(element => {
 
-             if(!Project.IsTypeProject(element))
+            if (!Project.IsTypeProject(element))
                 return;
 
             const templateClone = document.importNode(template.content, true);
             templateClone.querySelector(projectTemplateTitleClassKey).innerHTML = DOMPurify.sanitize(element.title);
             templateClone.querySelector(projectTemplateDateClassKey).textContent = element.date.getFullYear();
             templateClone.querySelector(projectTemplateDescriptionClassKey).innerHTML = DOMPurify.sanitize(markdownToHtmlConverter.makeHtml(element.description));
-            
+
             content.appendChild(templateClone);
         })
     });
@@ -262,7 +257,7 @@ function refreshSkills(title, skills) {
     fillSection(section, title, content =>
         skills.forEach(element => {
 
-            if(!Skill.IsTypeSkill(element))
+            if (!Skill.IsTypeSkill(element))
                 return;
 
             const templateClone = document.importNode(template.content, true);
@@ -283,12 +278,12 @@ function refreshHobbies(title, hobbies) {
 
     const section = templateHandler.get(hobbiesSectionIdKey);
     section.children[1].innerHTML = "";
-    
+
     const template = templateHandler.get(hobbyTemplateNameKey);
     fillSection(section, title, content => {
         hobbies.forEach(element => {
 
-            if(!Hobby.IsTypeHobby(element))
+            if (!Hobby.IsTypeHobby(element))
                 return;
 
             const templateClone = document.importNode(template.content, true);
@@ -300,16 +295,16 @@ function refreshHobbies(title, hobbies) {
 }
 
 async function refreshFromJson(dataJson) {
-    
+
     if (!dataJson)
         return
 
     document.title = dataJson.name;
-    
+
     const systemLanguage = await fetch(dataJson.systemLanguage).then(response => response.json());
     await refreshHtml(dataJson.customHtml);
     await refreshCss(dataJson.customCss);
-    
+
     refreshSystemLanguage(systemLanguage.key);
     refreshTitle(dataJson.title);
     refreshProfession(dataJson.profession);
@@ -325,20 +320,20 @@ async function refreshFromJson(dataJson) {
     refreshHobbies(systemLanguage.hobbiesTitle, dataJson.hobbies);
 }
 
-function SetNoPrint(){
+function SetNoPrint() {
     printButton.style.display = printButtonDisplay;
     structureContainer?.classList.add(previewPaddingClassName);
     templateHandler?.get(imageIdKey).classList.add(imagePaddingClassName);
 }
 
-function SetPrint(){
+function SetPrint() {
     printButton.style.display = "none";
     structureContainer?.classList.remove(previewPaddingClassName);
     templateHandler?.get(imageIdKey).classList.remove(imagePaddingClassName);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    
+
     printButton.onclick = _ => {
         SetPrint();
         this.print();

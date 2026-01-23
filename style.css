@@ -1,4 +1,4 @@
-﻿body{
+﻿body {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -6,7 +6,7 @@
     height: 100vh;
 }
 
-.window > div{
+.window > div {
     display: grid;
     grid-template-columns: 100px auto;
     gap: 20px;
@@ -14,21 +14,21 @@
     align-items: center;
 }
 
-.input-logo_container{
+.input-logo_container {
     grid-column: 1/3;
 }
 
-.window > div a{
+.window > div a {
     grid-column: 1/3;
     text-align: right;
 }
 
-label{
+label {
     display: inline-block;
     width: 100px;
 }
 
-#login{
+#login {
     display: flex;
     flex-direction: row;
     align-items: center;

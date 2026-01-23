@@ -31,8 +31,7 @@ async function addCv(cv) {
     const children = templateClone.children;
     children[0].maxLength = MaxNameLength;
     children[0].value = cv.name;
-    children[0].onchange = async function()
-    {
+    children[0].onchange = async function () {
         if (isNotStringOrEmpty(children[0].value)) {
             children[0].value = cv.name;
             return;
@@ -49,7 +48,7 @@ async function addCv(cv) {
         sessionStorage.setItem(CvIdItemKey, cv.id);
         location.assign("../Generator/");
     }
-    children[2].onclick = async function() {
+    children[2].onclick = async function () {
         if (confirm("Are you sure you want to delete this CV?")) {
             const parameters = [];
             parameters.push(new KeyPairValue("id", cv.id));
@@ -58,8 +57,8 @@ async function addCv(cv) {
                 APILink + `Cv/Delete/`, null,
                 _ => {
                     templateClone.remove()
-                    
-                    if(cvsParent.children.length === 1)
+
+                    if (cvsParent.children.length === 1)
                         cvFeedback.textContent = noCVContent;
                 },
                 response => showMessage(message, response, MessageEnums.Error));
@@ -73,16 +72,15 @@ async function reloadCvs() {
 
     cvFeedback.textContent = loadingContent;
     const children = cvsParent.children;
-    for(let i = children.length-1; i >= 0; i--){
-        if(children[i].tagName !== "P")
+    for (let i = children.length - 1; i >= 0; i--) {
+        if (children[i].tagName !== "P")
             children[i].remove();
     }
 
     createButton.style.display = "none";
-    
+
     await SendRequest("GET", localStorage.getItem(TokenKey), null, APILink + "Cv/GetAll", null,
-        async function(response)
-        {
+        async function (response) {
             const cvs = JSON.parse(response);
 
             for (const cv of cvs)
@@ -104,17 +102,16 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const parameters = [];
     parameters.push(new KeyPairValue("name", "CV"));
-    createButton.onclick = async function() 
-    {
+    createButton.onclick = async function () {
         createButton.disabled = true;
-        
+
         await SendRequest("PUT", localStorage.getItem(TokenKey), parameters,
             APILink + "Cv/Create", null,
-            _ =>{
+            _ => {
                 createButton.disabled = false;
                 reloadCvs()
             },
-            response =>{
+            response => {
                 showMessage(message, response, MessageEnums.Error);
                 createButton.disabled = false;
             });

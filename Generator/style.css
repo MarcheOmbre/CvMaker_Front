@@ -1,17 +1,17 @@
-﻿:root{
+﻿:root {
     --buttonsize: 35px;
     --text-area-height: 200px;
     --editor-width: calc(100vw - 7.1in - 32mm - 4px);
     --preview-width: calc(7.1in + 32mm);
 }
 
-html{
+html {
     background: white;
 }
 
-h2{
+h2 {
     width: 100%;
-    padding:5px;
+    padding: 5px;
     font-size: 1.2rem;
     background: var(--theme-color-background-light);
     margin-top: 50px;
@@ -19,14 +19,14 @@ h2{
     text-align: center;
 }
 
-#editor{
+#editor {
     display: flex;
     width: var(--editor-width);
     flex-direction: column;
     align-items: center;
 }
 
-#preview{
+#preview {
     position: fixed;
     width: var(--preview-width);
     height: 100vh;
@@ -36,7 +36,7 @@ h2{
     overflow-y: scroll;
 }
 
-.grid{
+.grid {
     display: grid;
     grid-template-columns: 200px auto;
     grid-gap: 50px;
@@ -44,13 +44,13 @@ h2{
     text-align: left;
 }
 
-.content{
+.content {
     margin-left: 20px;
     margin-right: 20px;
     width: calc(100% - 40px);
 }
 
-.buttons-container{
+.buttons-container {
     display: flex;
     flex-direction: row;
     gap: 10px;
@@ -70,20 +70,20 @@ h2{
     border-radius: 50%;
 }
 
-.movable_element{
+.movable_element {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
     gap: 10px;
 }
 
-.movable_element button{
+.movable_element button {
     min-width: 0;
     width: var(--buttonsize);
     height: var(--buttonsize);
 }
 
-.arrows_div{
+.arrows_div {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -93,7 +93,7 @@ h2{
     max-width: 75px;
 }
 
-.contact-item button, .skill-item button, .link-item button, .work-item button, .education-item button, .project-item button, .language-item button, .hobby-item button{
+.contact-item button, .skill-item button, .link-item button, .work-item button, .education-item button, .project-item button, .language-item button, .hobby-item button {
     min-width: 0;
     width: var(--buttonsize);
 }
@@ -106,11 +106,11 @@ h2{
     padding-bottom: 10px;
 }
 
-#works, #projects{
+#works, #projects {
     gap: 100px;
 }
 
-.contact-item, .link-item{
+.contact-item, .link-item {
     width: 100%;
     display: grid;
     grid-template-columns: auto auto var(--buttonsize);
@@ -122,21 +122,21 @@ h2{
     height: var(--text-area-height);
 }
 
-.work-item, .project-item{
+.work-item, .project-item {
     width: 100%;
     display: grid;
     grid-template-columns: 150px auto;
     grid-gap: 10px;
 }
 
-.skill-item{
+.skill-item {
     width: 100%;
     display: grid;
     grid-template-columns: 50px auto var(--buttonsize);
     grid-gap: 10px;
 }
 
-.hobby-item{
+.hobby-item {
     width: 100%;
     display: grid;
     grid-template-columns: auto var(--buttonsize);
@@ -144,24 +144,24 @@ h2{
 }
 
 
-.work-item .title-content_div, .project-item .title-content_div{
+.work-item .title-content_div, .project-item .title-content_div {
     display: grid;
     grid-template-columns: auto var(--buttonsize);
     grid-gap: 10px;
 }
 
-.work-item textarea, .project-item textarea{
+.work-item textarea, .project-item textarea {
     grid-column: 1/3;
     height: var(--text-area-height);
 }
 
-.work-item .date-content_div{
+.work-item .date-content_div {
     display: grid;
     grid-template-columns: auto auto;
     grid-gap: 10px;
 }
 
-.education-item{
+.education-item {
     width: 100%;
     display: grid;
     grid-template-columns: auto 150px var(--buttonsize);
@@ -177,17 +177,17 @@ h2{
 
 @media screen and (max-width: 1600px) {
 
-    #editor{
+    #editor {
         width: 100%;
     }
-    
-    #preview{
+
+    #preview {
         display: none;
     }
 }
 
 @media screen and (max-width: 768px) {
-    .movable_element:has(.work-item), .movable_element:has(.project-item){
+    .movable_element:has(.work-item), .movable_element:has(.project-item) {
         flex-direction: column;
     }
 }
