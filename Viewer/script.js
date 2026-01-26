@@ -71,49 +71,57 @@ function refreshImage(image) {
     imageEntry.style.display = image ? "block" : "none";
 }
 
-function refreshContacts(contacts, contactTypes) {
+function refreshContacts(title, contacts, contactTypes) {
 
-    if (!contacts || !Array.isArray(contacts) || !contactTypes || !Array.isArray(contactTypes))
+    if (!isString(title) || !contacts || !Array.isArray(contacts) || !contactTypes || !Array.isArray(contactTypes))
         return;
 
     const section = templateHandler.get(contactsSectionIdKey);
-    section.innerHTML = "";
+    section.children[1].innerHTML = "";
+    section.querySelector(sectionTitleParentClassKey).classList.toggle(hiddenClassName, contacts.length === 0);
+
 
     const template = templateHandler.get(contactTemplateNameKey);
-    contacts.forEach(element => {
+    this.fillSection(section, title, content => 
+    {
+        contacts.forEach(element => {
 
-        if (!Contact.IsTypeContact(element))
-            return;
+            if (!Contact.IsTypeContact(element))
+                return;
 
-        const type = element.type < contactTypes.length ? contactTypes[element.type] : "Unknown";
-        const templateClone = document.importNode(template.content, true);
-        templateClone.querySelector(contactTemplateTypeClassKey).innerHTML = type;
-        templateClone.querySelector(contactTemplateValueClassKey).innerHTML = DOMPurify.sanitize(element.value);
-        section.appendChild(templateClone);
+            const type = element.type < contactTypes.length ? contactTypes[element.type] : "Unknown";
+            const templateClone = document.importNode(template.content, true);
+            templateClone.querySelector(contactTemplateTypeClassKey).innerHTML = type;
+            templateClone.querySelector(contactTemplateValueClassKey).innerHTML = DOMPurify.sanitize(element.value);
+            content.appendChild(templateClone);
+        })
     });
 }
 
-function refreshLinks(links) {
+function refreshLinks(title, links) {
 
-    if (!links || !Array.isArray(links))
+    if (!isString(title) || !links || !Array.isArray(links))
         return;
 
     const section = templateHandler.get(linksSectionIdKey);
-    section.innerHTML = "";
+    section.children[1].innerHTML = "";
+    section.querySelector(sectionTitleParentClassKey).classList.toggle(hiddenClassName, links.length === 0);
 
     const template = templateHandler.get(linkTemplateNameKey);
-    links.forEach(element => {
+    this.fillSection(section, title, content => {
+        links.forEach(element => {
 
-        if (!Link.IsTypeLink(element))
-            return;
+            if (!Link.IsTypeLink(element))
+                return;
 
-        const templateClone = document.importNode(template.content, true);
-        templateClone.querySelector(linkTemplateNameClassKey).innerHTML = DOMPurify.sanitize(element.name);
-        const link = DOMPurify.sanitize(element.url);
-        const linkUrlElement = templateClone.querySelector(linkTemplateUrlClassKey);
-        linkUrlElement.href = link;
-        linkUrlElement.textContent = link;
-        section.appendChild(templateClone);
+            const templateClone = document.importNode(template.content, true);
+            templateClone.querySelector(linkTemplateNameClassKey).innerHTML = DOMPurify.sanitize(element.name);
+            const link = DOMPurify.sanitize(element.url);
+            const linkUrlElement = templateClone.querySelector(linkTemplateUrlClassKey);
+            linkUrlElement.href = link;
+            linkUrlElement.textContent = link;
+            content.appendChild(templateClone);
+        })
     });
 }
 
@@ -317,8 +325,8 @@ async function refreshFromJson(dataJson) {
     refreshProfession(dataJson.profession);
     refreshImage(dataJson.image);
     refreshAboutMe(systemLanguage.aboutMeTitle, dataJson.aboutMe);
-    refreshContacts(dataJson.contacts, systemLanguage.contactTypes);
-    refreshLinks(dataJson.links);
+    refreshContacts(systemLanguage.contactsTitle, dataJson.contacts, systemLanguage.contactTypes);
+    refreshLinks(systemLanguage.linksTitle, dataJson.links);
     refreshSkills(systemLanguage.skillsTitle, dataJson.skills);
     refreshWorks(systemLanguage.workTitle, dataJson.works);
     refreshEducations(systemLanguage.educationTitle, dataJson.educations);

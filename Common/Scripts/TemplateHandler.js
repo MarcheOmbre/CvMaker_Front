@@ -1,15 +1,15 @@
 const titleIdKey = "#header_title";
 const professionIdKey = "#header_profession";
 const imageIdKey = "#header_image";
-const contactsSectionIdKey = "#header_contacts";
-const linksSectionIdKey = "#header_links";
-const aboutMeSectionIdKey = "#about-me";
-const worksSectionIdKey = "#work";
-const educationSectionIdKey = "#education";
-const languagesSectionIdKey = "#languages";
-const projectsSectionIdKey = "#projects";
-const skillsSectionIdKey = "#skills";
-const hobbiesSectionIdKey = "#hobbies";
+const contactsSectionIdKey = "#section_contacts";
+const linksSectionIdKey = "#section_links";
+const aboutMeSectionIdKey = "#section_about-me";
+const worksSectionIdKey = "#section_work";
+const educationSectionIdKey = "#section_education";
+const languagesSectionIdKey = "#section_languages";
+const projectsSectionIdKey = "#section_projects";
+const skillsSectionIdKey = "#section_skills";
+const hobbiesSectionIdKey = "#section_hobbies";
 const contactTemplateNameKey = "contact-item_template";
 const contactTemplateChildKey = ".contact-item";
 const contactTemplateTypeClassKey = ".type";
@@ -93,8 +93,6 @@ class Template {
         this.#elementsCache.set(titleIdKey, container.querySelector(titleIdKey));
         this.#elementsCache.set(professionIdKey, container.querySelector(professionIdKey));
         this.#elementsCache.set(imageIdKey, container.querySelector(imageIdKey));
-        this.#elementsCache.set(contactsSectionIdKey, container.querySelector(contactsSectionIdKey));
-        this.#elementsCache.set(linksSectionIdKey, container.querySelector(linksSectionIdKey));
         this.#elementsCache.set(aboutMeSectionIdKey, container.querySelector(aboutMeSectionIdKey));
 
         /*
@@ -102,6 +100,12 @@ class Template {
          * Sections structure
          * 
          */
+        this.#elementsCache.set(contactsSectionIdKey, container.querySelector(contactsSectionIdKey));
+        if (!this.#checkSection(this.#elementsCache.get(contactsSectionIdKey)))
+            brokenElements.add(contactsSectionIdKey);
+        this.#elementsCache.set(linksSectionIdKey, container.querySelector(linksSectionIdKey));
+        if (!this.#checkSection(this.#elementsCache.get(linksSectionIdKey)))
+            brokenElements.add(linksSectionIdKey);
         this.#elementsCache.set(aboutMeSectionIdKey, container.querySelector(aboutMeSectionIdKey));
         if (!this.#checkSection(this.#elementsCache.get(aboutMeSectionIdKey)))
             brokenElements.add(aboutMeSectionIdKey);

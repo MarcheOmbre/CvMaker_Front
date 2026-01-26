@@ -399,7 +399,7 @@ function addContact(contact = new Contact()) {
         return;
 
 
-    const refreshView = () => frame.contentWindow.refreshContacts(extractContacts(), languageSystem.contactTypes);
+    const refreshView = () => frame.contentWindow.refreshContacts(languageSystem.contactsTitle, extractContacts(), languageSystem.contactTypes);
     const refreshCreateButton = () => addContactButton.style.display = contactsDiv.children.length < MaxItems ? 'block' : 'none';
 
     const template = document.importNode(contactItemTemplate.content, true).children[0];
@@ -437,7 +437,7 @@ function addLink(link = new Link()) {
     if (!Link.IsTypeLink(link))
         return;
 
-    const refreshView = () => frame.contentWindow.refreshLinks(extractLinks());
+    const refreshView = () => frame.contentWindow.refreshLinks(languageSystem.linksTitle, extractLinks());
     const refreshCreateButton = () => addLinkButton.style.display = linksDiv.children.length < MaxItems ? 'block' : 'none';
 
 
