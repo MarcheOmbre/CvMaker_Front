@@ -1,6 +1,6 @@
 /* 
 *
-* General 
+* 1. Variables & Global 
 *
 */
 :root {
@@ -27,6 +27,11 @@ section {
     width: 100%;
 }
 
+/* 
+*
+* 2. Typography 
+*
+*/
 h1 {
     font-family: "Lato", sans-serif;
     font-weight: 500;
@@ -59,7 +64,58 @@ h4 {
     margin-bottom: 5px;
 }
 
-/* Progress bar: */
+li, p, .education-item h4 {
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 10px;
+    line-height: 16px;
+}
+
+/* 
+*
+* 3. Reusable Components 
+*
+*/
+
+/* Sections layout */
+section .title-parent {
+    background-color: var(--main-color);
+    padding-top: 3px;
+    padding-bottom: 3px;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+section .content ul, ul.content {
+    padding-left: 20px;
+}
+
+/* Items separators and alignment */
+.work_header, .education-item, .project_header {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    justify-items: flex-start;
+    align-items: baseline;
+}
+
+.work-item + .work-item, .project-item + .project-item {
+    padding-top: 5px;
+}
+
+/* Separator between horizontal list items, dates... */
+.contact-item + .contact-item, .work_header p, .education-item .education_date, .project_header p {
+    padding-left: 10px;
+    border-left: 1px solid darkgray;
+}
+
+/* Progress bar */
 progress {
     margin-top: 5px;
     margin-bottom: 5px;
@@ -85,92 +141,11 @@ progress::-moz-progress-bar {
 
 /* 
 *
-* Sections 
+* 4. Specific Sections 
 *
 */
 
-/* Inner content */
-li, p, .education-item h4 {
-    font-family: "Montserrat", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 400;
-    font-style: normal;
-    font-size: 10px;
-    line-height: 16px;
-}
-
-.contact-item{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-}
-
-    /* Separator between horizontal list items, dates... */
-.contact-item + .contact-item, .work_header p, .education-item .education_date, .project_header p {
-    padding-left: 10px;
-    border-left: 1px solid darkgray;
-}
-
-section .title-parent {
-    background-color: var(--main-color);
-    padding-top: 3px;
-    padding-bottom: 3px;
-    display: inline-block;
-    text-align: center;
-    width: 100%;
-    max-width: 100%;
-    margin-top: 4px;
-    margin-bottom: 4px;
-}
-
-/* Space before a list content, avoiding to get the same alignment for texts and lists */
-section .content ul, ul.content {
-    padding-left: 20px;
-}
-
-#section_contacts{
-    width: 80%;
-}
-
-#section_contacts .content, #section_links .content {
-    padding-left: 0;
-}
-
-.work_header, .education-item, .project_header {
-    display: flex;
-    flex-direction: row;
-    gap: 15px;
-    justify-items: flex-start;
-    align-items: baseline
-}
-
-.work-item + .work-item, .project-item + .project-item {
-    padding-top: 5px;
-}
-
-#section_languages ul, #section_hobbies ul {
-    display: flex;
-    flex-direction: row;
-    gap: 30px;
-    justify-items: flex-start;
-    align-items: baseline
-}
-
-/* 
-*
-* CV Header 
-*
-*/
-#section_contacts .content {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 15px;
-    list-style: none;
-    margin-bottom: 5px;
-}
-
+/* Header & Photo */
 #header_image {
     position: relative;
     float: right;
@@ -181,6 +156,29 @@ section .content ul, ul.content {
     right: 0;
 }
 
+/* Contacts */
+#section_contacts {
+    width: 80%;
+}
+
+#section_contacts .content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 15px;
+    list-style: none;
+    margin-bottom: 5px;
+    padding-left: 0;
+}
+
+.contact-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Links */
 #section_links .content {
     display: flex;
     flex-direction: row;
@@ -190,6 +188,7 @@ section .content ul, ul.content {
     justify-items: flex-start;
     align-items: baseline;
     margin-bottom: 10px;
+    padding-left: 0;
 }
 
 .link-item {
@@ -206,13 +205,13 @@ section .content ul, ul.content {
     color: black;
 }
 
-
+/* Skills, Languages, Hobbies */
 #section_skills ul, #section_languages ul, #section_hobbies ul {
     padding-left: 0;
     list-style: none;
 }
 
-#section_skills ul{
+#section_skills ul {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 5px;
@@ -224,6 +223,14 @@ section .content ul, ul.content {
     gap: 5px;
 }
 
+#section_languages ul, #section_hobbies ul {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    justify-items: flex-start;
+    align-items: baseline;
+}
+
 .language-item {
     display: flex;
     flex-direction: row;
@@ -232,46 +239,16 @@ section .content ul, ul.content {
 
 /* 
 *
-* Order
+* 5. Order 
 *
 */
-
-#header {
-    order: 1;
-}
-
-#section_contacts {
-    order: 2;
-}
-
-#section_links{
-    order: 3;
-}
-
-#section_about-me {
-    order: 4;
-}
-
-#section_skills {
-    order: 5;
-}
-
-#section_work {
-    order: 6;
-}
-
-#section_projects {
-    order: 7;
-}
-
-#section_education {
-    order: 8;
-}
-
-#section_languages {
-    order: 9;
-}
-
-#section_hobbies {
-    order: 10;
-}
+#header { order: 1; }
+#section_contacts { order: 2; }
+#section_links { order: 3; }
+#section_about-me { order: 4; }
+#section_skills { order: 5; }
+#section_work { order: 6; }
+#section_projects { order: 7; }
+#section_education { order: 8; }
+#section_languages { order: 9; }
+#section_hobbies { order: 10; }

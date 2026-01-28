@@ -9,7 +9,7 @@
   "responseOverrides": {
     "401": {
       "statusCode": 301,
-      "redirect": "/login"
+      "redirect": "/"
     },
     "403": {
       "rewrite": "/404"
