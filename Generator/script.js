@@ -697,8 +697,7 @@ function addHobby(hobby = new Hobby()) {
 
 document.addEventListener("DOMContentLoaded", async function () {
 
-        if (!await checkIsLogged())
-            return;
+        await checkIsLogged();
 
         systemLanguageSelect.onchange = async function (event) { await refreshSystemLanguage(event.target.value, true) };
         removePhotoButton.onclick = _ => {
