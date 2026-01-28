@@ -110,7 +110,10 @@ async function reloadCvs() {
 
 document.addEventListener("DOMContentLoaded", async function () {
 
-    await checkIsLogged();
+    if (!await checkIsLogged()){
+        location.assign("../");
+        return;
+    }
 
     // Load all the cvs
     await reloadCvs();
