@@ -37,14 +37,21 @@ async function SendRequest(type, tokenToInject, parameters, link, data, onSuccee
         options.body = JSON.stringify(data);
     }
 
-    const response = await fetch(link, options);
-    const textResponse = await response.text();
+    try{
+        const response = await fetch(link, options);
+        const textResponse = await response.text();
 
-    if (response.ok) {
-        if (onSucceed)
-            onSucceed(textResponse);
-    } else {
-        if (onFailed)
-            onFailed(textResponse);
+        if (response.ok) {
+            if (onSucceed)
+                onSucceed(textResponse);
+        } else {
+            if (onFailed)
+                onFailed(textResponse);
+        }
     }
+    catch (error){
+        console.error(error);
+        onFailed("An error occured while sending the request, please try again later. If the problem persists, please retry.");
+    }
+
 }
